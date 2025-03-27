@@ -3,19 +3,17 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import App from './App'
 // import HighScores from './pages/HighScores'
-// import ErrorPage from './pages/Error'
-// import GamePage from './pages/Game'
+import ErrorPage from './pages/ErrorPage'
+import Home from './pages/Home'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
+    errorElement: <ErrorPage />,
     // errorElement: <ErrorPage />,
     children: [
-      {
-        index: true,
-        // element: <GamePage />,
-      }
+      { path: '', element: <Home />},
     ],
   },
 ]);
