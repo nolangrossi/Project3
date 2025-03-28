@@ -1,3 +1,3 @@
-import PokemonModel from "./Pokemon";
+import PokemonModel from "./Pokemon.js";
 
 export { PokemonModel };
