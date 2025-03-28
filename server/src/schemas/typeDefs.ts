@@ -1,14 +1,12 @@
 import { gql } from 'apollo-server';
 
 const typeDefs = gql`
-  # Define the Pokemon type
   type Pokemon {
     id: Int!
     name: String!
-    type: [String!]!
+    typing: [String!]!
   }
 
-  # Define the Query type
   type Query {
     # Fetch all Pokémon
     getAllPokemon: [Pokemon!]!
@@ -18,6 +16,8 @@ const typeDefs = gql`
 
     # Fetch Pokémon by type
     getPokemonByType(type: String!): [Pokemon!]!
+    
+    getRandomPokemon: Pokemon
   }
 `;
 export default typeDefs;

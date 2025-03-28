@@ -37,7 +37,19 @@ const resolvers = {
         throw new Error('Failed to fetch Pokémon');
       }
     },
-  },
+    getRandomPokemon: async () => {
+        try {
+            const count = await PokemonModel.countDocuments();
+            const random = Math.floor(Math.random() * count);
+            const randomPokemon = await PokemonModel.findOne().skip(random);
+            console.log('Fetched random Pokémon:', randomPokemon);
+            return randomPokemon;
+        } catch (error) {
+            console.error('Error fetching random Pokémon:', error);
+            throw new Error('Failed to fetch random Pokémon');
+        }
+  }
+  }
 };
 
 export default resolvers;
