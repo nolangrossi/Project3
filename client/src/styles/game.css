@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+body, h1 {
+    font-family: 'VT323', monospace;  
+    font-weight: 400;
+    font-style: normal; 
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(to bottom, #889828, #889828 50%, #b1b169 50%, #b1b169);
+    background-size: 100% 20px;
+    border-top: 40px inset #d5ef44;
+    border-bottom: 40px inset #889828;
+    padding: 0px;
+    height: 100vh;
+  }
+  
+  .grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .word-card {
+    background-color: #3890d8;
+    padding: 25px;
+    padding-top: 30px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 350px; /* Ensures words have enough room */
+    position: relative;
+    /* inner shadow along bottom and left*/
+    box-shadow: inset -10px -10px 0px -4px #2878B0;
+
+  }
+  
+  /* Offset for right-side cards */
+  .word-card:nth-child(odd) {
+    margin-top: -10px;
+    margin-bottom: 10px;
+  }
+
+  .word-card:nth-child(even) {
+    margin-top: 20px; /* Slight vertical offset */
+    margin-bottom: -10px;
+  }
+
+  .hint-label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .input-row {
+    display: flex;
+    gap: 8px; /* Spreads the input boxes apart */
+    justify-content: center;
+  }
+  
+  .input-box {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    text-align: center;
+    border-radius: 5px;
+    border: 2px solid #ccc;
+    background-color: white;
+    transition: background-color 0.3s ease, transform 0.1s ease-in-out;
+  }
+  
+  .active-box {
+    border-color: #ffffff;
+    box-shadow: 0px 0px 5px #fff;
+    transform: scale(1.1);
+  }
+
+  /* Color coding for guesses */
+  .input-box.green {
+    background-color: #4caf50; /* Correct position */
+    color: white;
+  }
+
+  .input-box.yellow {
+    background-color: #ffeb3b; /* Correct letter, wrong position */
+  }
+
+  .input-box.red {
+    background-color: #f44336; /* Incorrect letter */
+    color: white;
+  }
+  
+  .footer-container {
+    display: flex;
+    width: 80%;
+    height: 20%;
+  }
+
+  .alert-box {
+    background-color: white;
+    /* box-shadow: inset 0px 0px 0px 5px #706880; */
+    color: black;
+    padding: 10px;
+    padding-top: 10px;
+    padding-bottom: 30px;
+    font-size: 1.6rem;
+    text-align: left;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    width: 60%;
+    margin-right: 0;
+    position: relative;
+  }
+  
+  /*A bunch of this is meant to be for a bigger div around it...*/
+  .menu-box {
+    background-color: white;
+    /* box-shadow: inset 0px 0px 0px 5px #d04028; */
+    margin: 0 0 0 auto;
+    display: block;
+    position: relative;
+    width: 30%;
+    height: 100%;
+    margin-right: 10px;
+    color: black;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+  }
+
+  .submit-button {
+    font-size: 1.3rem;
+    cursor: pointer;
+    background-color: white;
+    margin-left: 20px;
+    border: none;
+    transition: background-color 0.3s ease;
+  }
+
+  .submit-button:hover {
+    background-color: #283593;
+  }
+
+  .image-placeholder {
+    background-color: red;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    border-radius: 5px;
+  }
