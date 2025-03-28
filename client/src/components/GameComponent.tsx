@@ -91,7 +91,7 @@ const Game: React.FC = () => {
       {/* Grid Layout for Word Cards */}
       <div className="grid-container">
         {rows.map((row, rowIndex) => (
-          <div key={rowIndex} className="word-card">
+          <div key={rowIndex} className="word-card pixel-corners-blue">
             {/* Only show hint if the previous row was incorrect */}
             {rowIndex >= 1 && rowIndex <= 3 && incorrectRows[rowIndex - 1] && hints[rowIndex - 1] && (
               <span className="hint-label">Hint: {hints[rowIndex - 1]}</span>
@@ -134,8 +134,8 @@ const Game: React.FC = () => {
 
       {/* Submit and Alerts */}
       <div className="footer-container">
-        <div className="alert-box grey-border">{gameMessage}</div>
-        <div className="menu-box pixel-corners red-border">
+        <div className="alert-box pixel-corners-grey">{gameMessage}</div>
+        <div className="menu-box pixel-corners-red">
         <button className="submit-button" onClick={checkWord}>
           Submit
         </button>

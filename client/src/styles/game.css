@@ -103,11 +103,12 @@ body, h1 {
 
   .alert-box {
     background-color: white;
-    box-shadow: inset 0px 0px 0px 5px #706880;
+    /* box-shadow: inset 0px 0px 0px 5px #706880; */
     color: black;
     padding: 10px;
-    padding-top: 30px;
+    padding-top: 10px;
     padding-bottom: 30px;
+    font-size: 1.6rem;
     text-align: left;
     margin-bottom: 10px;
     margin-left: 10px;
@@ -136,6 +137,7 @@ body, h1 {
   }
 
   .submit-button {
+    font-size: 1.3rem;
     cursor: pointer;
     background-color: white;
     margin-left: 20px;

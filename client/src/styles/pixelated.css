@@ -1,89 +1,95 @@
-/* This uses the following site: https://pixelcorners.lukeb.co.uk/ */
-.pixel-corners,
-.pixel-corners--wrapper {
-  clip-path: polygon(0px calc(100% - 8px),
-    4px calc(100% - 8px),
+/* Cant figure out why these won't function when properties are separated.
+    So I'm just duplicating the code... 
+    Can be found here: https://pixelcorners.lukeb.co.uk/ Properties 4,2,X,2*/
+
+
+
+/* Red Pixels */
+.pixel-corners-red,
+.pixel-corners-red--wrapper {
+  clip-path: polygon(0px calc(100% - 4px),
     4px calc(100% - 4px),
-    8px calc(100% - 4px),
-    8px 100%,
-    calc(100% - 8px) 100%,
-    calc(100% - 8px) calc(100% - 4px),
+    4px 100%,
+    calc(100% - 4px) 100%,
     calc(100% - 4px) calc(100% - 4px),
-    calc(100% - 4px) calc(100% - 8px),
-    100% calc(100% - 8px),
-    100% 8px,
-    calc(100% - 4px) 8px,
+    100% calc(100% - 4px),
+    100% 4px,
     calc(100% - 4px) 4px,
-    calc(100% - 8px) 4px,
-    calc(100% - 8px) 0px,
-    8px 0px,
-    8px 4px,
+    calc(100% - 4px) 0px,
+    4px 0px,
     4px 4px,
-    4px 8px,
-    0px 8px);
+    0px 4px);
   position: relative;
 }
-.pixel-corners {
-  border: 4px solid transparent;
+.pixel-corners-red {
+  border: 8px solid transparent;
 }
-.pixel-corners--wrapper {
+.pixel-corners-red--wrapper {
   width: fit-content;
   height: fit-content;
 }
-.pixel-corners--wrapper .pixel-corners {
+.pixel-corners-red--wrapper .pixel-corners {
   display: block;
-  clip-path: polygon(4px 8px,
-    8px 8px,
-    8px 4px,
-    calc(100% - 8px) 4px,
-    calc(100% - 8px) 8px,
-    calc(100% - 4px) 8px,
-    calc(100% - 4px) calc(100% - 8px),
-    calc(100% - 8px) calc(100% - 8px),
-    calc(100% - 8px) calc(100% - 4px),
-    8px calc(100% - 4px),
-    8px calc(100% - 8px),
-    4px calc(100% - 8px));
+  clip-path: polygon(8px 16px,
+    8px 12px,
+    12px 12px,
+    12px 8px,
+    16px 8px,
+    calc(100% - 16px) 8px,
+    calc(100% - 12px) 8px,
+    calc(100% - 12px) 12px,
+    calc(100% - 8px) 12px,
+    calc(100% - 8px) 16px,
+    calc(100% - 8px) calc(100% - 16px),
+    calc(100% - 8px) calc(100% - 12px),
+    calc(100% - 12px) calc(100% - 12px),
+    calc(100% - 12px) calc(100% - 8px),
+    calc(100% - 16px) calc(100% - 8px),
+    16px calc(100% - 8px),
+    12px calc(100% - 8px),
+    12px calc(100% - 12px),
+    8px calc(100% - 12px),
+    8px calc(100% - 16px));
 }
-.pixel-corners::after,
-.pixel-corners--wrapper::after {
+.pixel-corners-red::after,
+.pixel-corners-red--wrapper::after {
   content: "";
   position: absolute;
-  clip-path: polygon(0px calc(100% - 8px),
-    4px calc(100% - 8px),
+  clip-path: polygon(0px calc(100% - 4px),
     4px calc(100% - 4px),
-    8px calc(100% - 4px),
-    8px 100%,
-    calc(100% - 8px) 100%,
-    calc(100% - 8px) calc(100% - 4px),
+    4px 100%,
+    calc(100% - 4px) 100%,
     calc(100% - 4px) calc(100% - 4px),
-    calc(100% - 4px) calc(100% - 8px),
-    100% calc(100% - 8px),
-    100% 8px,
-    calc(100% - 4px) 8px,
+    100% calc(100% - 4px),
+    100% 4px,
     calc(100% - 4px) 4px,
-    calc(100% - 8px) 4px,
-    calc(100% - 8px) 0px,
-    8px 0px,
-    8px 4px,
+    calc(100% - 4px) 0px,
+    4px 0px,
     4px 4px,
-    4px 8px,
-    0px 8px,
+    0px 4px,
     0px 50%,
-    4px 50%,
-    4px 8px,
-    8px 8px,
-    8px 4px,
-    calc(100% - 8px) 4px,
-    calc(100% - 8px) 8px,
-    calc(100% - 4px) 8px,
-    calc(100% - 4px) calc(100% - 8px),
-    calc(100% - 8px) calc(100% - 8px),
-    calc(100% - 8px) calc(100% - 4px),
-    8px calc(100% - 4px),
-    8px calc(100% - 8px),
-    4px calc(100% - 8px),
-    4px 50%,
+    8px 50%,
+    8px 16px,
+    8px 12px,
+    12px 12px,
+    12px 8px,
+    16px 8px,
+    calc(100% - 16px) 8px,
+    calc(100% - 12px) 8px,
+    calc(100% - 12px) 12px,
+    calc(100% - 8px) 12px,
+    calc(100% - 8px) 16px,
+    calc(100% - 8px) calc(100% - 16px),
+    calc(100% - 8px) calc(100% - 12px),
+    calc(100% - 12px) calc(100% - 12px),
+    calc(100% - 12px) calc(100% - 8px),
+    calc(100% - 16px) calc(100% - 8px),
+    16px calc(100% - 8px),
+    12px calc(100% - 8px),
+    12px calc(100% - 12px),
+    8px calc(100% - 12px),
+    8px calc(100% - 16px),
+    8px 50%,
     0px 50%);
   top: 0;
   bottom: 0;
@@ -93,6 +99,172 @@
   display: block;
   pointer-events: none;
 }
-.pixel-corners::after {
+.pixel-corners-red::after {
+  margin: -8px;
+}
+
+/* Blue Pixels */
+.pixel-corners-blue,
+.pixel-corners-blue--wrapper {
+  clip-path: polygon(0px calc(100% - 4px),
+    4px calc(100% - 4px),
+    4px 100%,
+    calc(100% - 4px) 100%,
+    calc(100% - 4px) calc(100% - 4px),
+    100% calc(100% - 4px),
+    100% 4px,
+    calc(100% - 4px) 4px,
+    calc(100% - 4px) 0px,
+    4px 0px,
+    4px 4px,
+    0px 4px);
+  position: relative;
+}
+.pixel-corners-blue {
+  border: 4px solid transparent;
+}
+.pixel-corners-blue--wrapper {
+  width: fit-content;
+  height: fit-content;
+}
+.pixel-corners-blue--wrapper .pixel-corners {
+  display: block;
+  clip-path: polygon(4px 4px,
+    calc(100% - 4px) 4px,
+    calc(100% - 4px) calc(100% - 4px),
+    4px calc(100% - 4px));
+}
+.pixel-corners-blue::after,
+.pixel-corners-blue--wrapper::after {
+  content: "";
+  position: absolute;
+  clip-path: polygon(0px calc(100% - 4px),
+    4px calc(100% - 4px),
+    4px 100%,
+    calc(100% - 4px) 100%,
+    calc(100% - 4px) calc(100% - 4px),
+    100% calc(100% - 4px),
+    100% 4px,
+    calc(100% - 4px) 4px,
+    calc(100% - 4px) 0px,
+    4px 0px,
+    4px 4px,
+    0px 4px,
+    0px 50%,
+    4px 50%,
+    4px 4px,
+    calc(100% - 4px) 4px,
+    calc(100% - 4px) calc(100% - 4px),
+    4px calc(100% - 4px),
+    4px 50%,
+    0px 50%);
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #80c0d8;
+  display: block;
+  pointer-events: none;
+}
+.pixel-corners-blue::after {
   margin: -4px;
+}
+
+/* Grey Pixels */
+.pixel-corners-grey,
+.pixel-corners-grey--wrapper {
+  clip-path: polygon(0px calc(100% - 4px),
+    4px calc(100% - 4px),
+    4px 100%,
+    calc(100% - 4px) 100%,
+    calc(100% - 4px) calc(100% - 4px),
+    100% calc(100% - 4px),
+    100% 4px,
+    calc(100% - 4px) 4px,
+    calc(100% - 4px) 0px,
+    4px 0px,
+    4px 4px,
+    0px 4px);
+  position: relative;
+}
+.pixel-corners-grey {
+  border: 8px solid transparent;
+}
+.pixel-corners-grey--wrapper {
+  width: fit-content;
+  height: fit-content;
+}
+.pixel-corners-grey--wrapper .pixel-corners {
+  display: block;
+  clip-path: polygon(8px 16px,
+    8px 12px,
+    12px 12px,
+    12px 8px,
+    16px 8px,
+    calc(100% - 16px) 8px,
+    calc(100% - 12px) 8px,
+    calc(100% - 12px) 12px,
+    calc(100% - 8px) 12px,
+    calc(100% - 8px) 16px,
+    calc(100% - 8px) calc(100% - 16px),
+    calc(100% - 8px) calc(100% - 12px),
+    calc(100% - 12px) calc(100% - 12px),
+    calc(100% - 12px) calc(100% - 8px),
+    calc(100% - 16px) calc(100% - 8px),
+    16px calc(100% - 8px),
+    12px calc(100% - 8px),
+    12px calc(100% - 12px),
+    8px calc(100% - 12px),
+    8px calc(100% - 16px));
+}
+.pixel-corners-grey::after,
+.pixel-corners-grey--wrapper::after {
+  content: "";
+  position: absolute;
+  clip-path: polygon(0px calc(100% - 4px),
+    4px calc(100% - 4px),
+    4px 100%,
+    calc(100% - 4px) 100%,
+    calc(100% - 4px) calc(100% - 4px),
+    100% calc(100% - 4px),
+    100% 4px,
+    calc(100% - 4px) 4px,
+    calc(100% - 4px) 0px,
+    4px 0px,
+    4px 4px,
+    0px 4px,
+    0px 50%,
+    8px 50%,
+    8px 16px,
+    8px 12px,
+    12px 12px,
+    12px 8px,
+    16px 8px,
+    calc(100% - 16px) 8px,
+    calc(100% - 12px) 8px,
+    calc(100% - 12px) 12px,
+    calc(100% - 8px) 12px,
+    calc(100% - 8px) 16px,
+    calc(100% - 8px) calc(100% - 16px),
+    calc(100% - 8px) calc(100% - 12px),
+    calc(100% - 12px) calc(100% - 12px),
+    calc(100% - 12px) calc(100% - 8px),
+    calc(100% - 16px) calc(100% - 8px),
+    16px calc(100% - 8px),
+    12px calc(100% - 8px),
+    12px calc(100% - 12px),
+    8px calc(100% - 12px),
+    8px calc(100% - 16px),
+    8px 50%,
+    0px 50%);
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #706880;
+  display: block;
+  pointer-events: none;
+}
+.pixel-corners-grey::after {
+  margin: -8px;
 }
