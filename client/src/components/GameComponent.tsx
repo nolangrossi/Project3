@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getRandomWord } from "./functions/wordSelector";
 import "../styles/game.css";
+import "../styles/pixelated.css";
 
 const Game: React.FC = () => {
   const [selectedWord, _setSelectedWord] = useState(() => getRandomWord());
@@ -133,8 +134,8 @@ const Game: React.FC = () => {
 
       {/* Submit and Alerts */}
       <div className="footer-container">
-        <div className="alert-box">{gameMessage}</div>
-        <div className="menu-box">
+        <div className="alert-box grey-border">{gameMessage}</div>
+        <div className="menu-box pixel-corners red-border">
         <button className="submit-button" onClick={checkWord}>
           Submit
         </button>
