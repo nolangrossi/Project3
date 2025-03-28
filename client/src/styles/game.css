@@ -1,82 +1,119 @@
-/* game.css */
 .game-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 20px;
+    background: linear-gradient(to right, #a4c639, #b0c541);
+    padding: 20px;
+    height: 100vh;
   }
   
-  .card {
-    background-color: #5BACDC; /* Blue card */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
-    width: 350px;
-    text-align: center;
+  .grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .word-card {
+    background-color: #2aa3b2;
+    padding: 25px;
+    padding-top: 30px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 350px; /* Ensures words have enough room */
     position: relative;
   }
   
-  .card-footer {
-    background-color: black;
-    height: 10px;
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    border-radius: 0 0 10px 10px;
+  /* Offset for right-side cards */
+  .word-card:nth-child(odd) {
+    margin-top: -10px;
+    margin-bottom: 10px;
+  }
+
+  .word-card:nth-child(even) {
+    margin-top: 20px; /* Slight vertical offset */
+    margin-bottom: -10px;
+  }
+
+  .hint-label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
   }
   
-  .word-row {
+  .input-row {
     display: flex;
+    gap: 8px; /* Spreads the input boxes apart */
     justify-content: center;
-    margin: 5px 0;
   }
   
   .input-box {
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
     text-align: center;
-    border: 1px solid #ccc;
     border-radius: 5px;
+    border: 2px solid #ccc;
     background-color: white;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-    margin: 3px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .input-box:focus {
-    outline: none;
+    transition: background-color 0.3s ease, transform 0.1s ease-in-out;
   }
   
   .active-box {
-    border: 2px solid red;
+    border-color: #ffffff;
+    box-shadow: 0px 0px 5px #fff;
+    transform: scale(1.1);
+  }
+
+  /* Color coding for guesses */
+  .input-box.green {
+    background-color: #4caf50; /* Correct position */
+    color: white;
+  }
+
+  .input-box.yellow {
+    background-color: #ffeb3b; /* Correct letter, wrong position */
+  }
+
+  .input-box.red {
+    background-color: #f44336; /* Incorrect letter */
+    color: white;
   }
   
-  .word-row .arrow {
-    font-size: 20px;
-    color: black;
-    margin-right: 5px;
+  .alert-box {
+    background-color: #c218a5;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    width: 80%;
   }
   
   .submit-button {
-    margin-top: 15px;
-    padding: 8px 15px;
-    font-size: 16px;
-    background-color: black;
+    background-color: #1a237e;
     color: white;
+    padding: 10px;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
-  }
-  
-  .submit-button:hover {
-    background-color: #333;
-  }
-  
-  .message-box {
-    margin-top: 10px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
   }
-  
+
+  .submit-button:hover {
+    background-color: #283593;
+  }
+
+  .image-placeholder {
+    background-color: red;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    border-radius: 5px;
+  }
