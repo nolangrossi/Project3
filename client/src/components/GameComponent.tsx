@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { words } from "../assets/tempWords/words";
+import { getRandomWord } from "./functions/wordSelector";
 import "../styles/game.css";
 
 const Game: React.FC = () => {
-  const [selectedWord, _setSelectedWord] = useState(() => {
-    const randomIndex = Math.floor(Math.random() * words.length);
-    return words[randomIndex];
-  });
+  const [selectedWord, _setSelectedWord] = useState(() => getRandomWord());
 
   const [rows, setRows] = useState<string[][]>(
     Array(6).fill("").map(() => Array(selectedWord.name.length).fill(""))
