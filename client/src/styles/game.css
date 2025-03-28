@@ -1,0 +1,82 @@
+/* game.css */
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .card {
+    background-color: #5BACDC; /* Blue card */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+    width: 350px;
+    text-align: center;
+    position: relative;
+  }
+  
+  .card-footer {
+    background-color: black;
+    height: 10px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-radius: 0 0 10px 10px;
+  }
+  
+  .word-row {
+    display: flex;
+    justify-content: center;
+    margin: 5px 0;
+  }
+  
+  .input-box {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 3px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .input-box:focus {
+    outline: none;
+  }
+  
+  .active-box {
+    border: 2px solid red;
+  }
+  
+  .word-row .arrow {
+    font-size: 20px;
+    color: black;
+    margin-right: 5px;
+  }
+  
+  .submit-button {
+    margin-top: 15px;
+    padding: 8px 15px;
+    font-size: 16px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .submit-button:hover {
+    background-color: #333;
+  }
+  
+  .message-box {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
