@@ -134,9 +134,11 @@ const Game: React.FC = () => {
       {/* Submit and Alerts */}
       <div className="footer-container">
         <div className="alert-box">{gameMessage}</div>
+        <div className="menu-box">
         <button className="submit-button" onClick={checkWord}>
           Submit
         </button>
+        </div>
       </div>
 
       {userScore !== null && <h2>Final Score: {userScore}</h2>}
