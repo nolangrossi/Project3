@@ -3,6 +3,7 @@ import React from "react";
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
+  toggleLogin?: () => void
 }
 
 const LoginModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {

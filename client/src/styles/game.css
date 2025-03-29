@@ -120,30 +120,6 @@ body, h1 {
   }
   
   /*A bunch of this is meant to be for a bigger div around it...*/
-  .menu-box {
-    background-color: white;
-    /* box-shadow: inset 0px 0px 0px 5px #d04028; */
-    margin: 0 0 0 auto;
-    display: block;
-    position: relative;
-    width: 30%;
-    height: 100%;
-    margin-right: 10px;
-    color: black;
-    padding: 10px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 5px;
-  }
-
-  .submit-button {
-    font-size: 1.3rem;
-    cursor: pointer;
-    background-color: white;
-    margin-left: 20px;
-    border: none;
-    transition: background-color 0.3s ease;
-  }
 
   .submit-button:hover {
     background-color: #283593;
