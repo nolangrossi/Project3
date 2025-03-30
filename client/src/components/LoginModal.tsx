@@ -9,7 +9,7 @@ interface LoginModalProps {
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({ showModal, setShowLoginModal, setIsLoggedIn }) => {
-  const [isLogin, setIsLogin] = useState(true); // Tracks if in login or sign-up tab
+  const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoggedIn, setLocalIsLoggedIn] = useState(false);
@@ -47,17 +47,17 @@ const LoginModal: React.FC<LoginModalProps> = ({ showModal, setShowLoginModal, s
       (user) => user.username === username && user.password === password
     );
     if (user) {
-      setIsLoggedIn(true); // Update the parent state to logged in
-      setLocalIsLoggedIn(true); // Local state for modal logic
+      setIsLoggedIn(true);
+      setLocalIsLoggedIn(true);
     } else {
       alert('Invalid credentials');
-      setLocalIsLoggedIn(false);  // Ensure isLoggedIn remains false for failed login
+      setLocalIsLoggedIn(false);
     }
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false); // Update the parent state to logged out
-    setLocalIsLoggedIn(false); // Local state for modal logic
+    setIsLoggedIn(false);
+    setLocalIsLoggedIn(false);
     setShowLoginModal(false);
   };
 
@@ -72,7 +72,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ showModal, setShowLoginModal, s
     // Add the new user to mockUsers (temporarily for testing)
     mockUsers.push({ id: mockUsers.length + 1, username, password });
     alert('Sign-up successful');
-    setIsLogin(true); // Switch back to login after successful sign-up
+    setIsLogin(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -80,7 +80,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ showModal, setShowLoginModal, s
     if (isLogin) {
       handleLogin();
     } else {
-      handleSignUp(); // Sign-up logic when not in login mode
+      handleSignUp();
     }
   };
 
