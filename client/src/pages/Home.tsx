@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import Game from '../components/GameComponent';
 // import LoginModal from '../components/LoginModal';
 // import MenuBox from '../components/MenuBox';
+//import '../styles/home.css'
 
 const Home = () => {
     // Preventing the default scrolling behavior
@@ -21,7 +22,6 @@ const Home = () => {
 
   return (
     <div className="home">
-      <h1 className="page-title">This is the home page.</h1>
       <Game />
     </div>
   );

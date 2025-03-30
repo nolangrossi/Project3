@@ -91,7 +91,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ showModal, setShowLoginModal, s
           <button className="close-btn" onClick={handleClose}>X</button>
           <h2>{isLogin ? 'Login' : 'Sign Up'}</h2>
           <form onSubmit={handleSubmit}>
-            <label>
+            <label className="modal-input">
               Username:
               <input
                 type="text"
@@ -100,7 +100,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ showModal, setShowLoginModal, s
                 required
               />
             </label>
-            <label>
+            <label className="modal-input">
               Password:
               <input
                 type="password"
