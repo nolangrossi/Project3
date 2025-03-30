@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import Game from '../components/GameComponent';
+// import LoginModal from '../components/LoginModal';
+// import MenuBox from '../components/MenuBox';
 
 const Home = () => {
     // Preventing the default scrolling behavior

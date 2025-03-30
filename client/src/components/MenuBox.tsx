@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from "react";
-import LoginModal from "./LoginModal";
-import StatsModal from "./StatsModal";
 import "../styles/menuBox.css";
 
 interface MenuBoxProps {
   checkWord: () => void;
+  setShowLoginModal: React.Dispatch<React.SetStateAction<boolean>>;
   isLoggedIn: boolean;
-  toggleLogin: () => void;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const MenuBox: React.FC<MenuBoxProps> = ({ checkWord, isLoggedIn, toggleLogin }) => {
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showStatsModal, setShowStatsModal] = useState(false);
+const MenuBox: React.FC<MenuBoxProps> = ({ checkWord, setShowLoginModal, isLoggedIn, setIsLoggedIn }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const menuOptions = [
     { label: "Submit", action: checkWord },
-    { label: isLoggedIn ? "Log Out" : "Log In", action: () => setShowLoginModal(true) },
-    { label: "Stats", action: () => setShowStatsModal(true) },
+    {
+      label: isLoggedIn ? "Log Out" : "Login", // Toggle button text based on login status
+      action: isLoggedIn
+        ? () => {
+            setIsLoggedIn(false);
+            // Optionally handle logout actions like clearing session data
+          }
+        : () => setShowLoginModal(true), // Open LoginModal when not logged in
+    },
   ];
 
   useEffect(() => {
@@ -43,11 +47,6 @@ const MenuBox: React.FC<MenuBoxProps> = ({ checkWord, isLoggedIn, toggleLogin })
           {option.label}
         </button>
       ))}
-
-      {showLoginModal && (
-        <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} toggleLogin={toggleLogin} />
-      )}
-      {showStatsModal && <StatsModal closeModal={() => setShowStatsModal(false)} />}
     </div>
   );
 };

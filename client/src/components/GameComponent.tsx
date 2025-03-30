@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getRandomWord } from "./functions/wordSelector";
 import MenuBox from "./MenuBox";
+import LoginModal from "./LoginModal";
 import "../styles/game.css";
 import "../styles/pixelated.css";
 
@@ -10,11 +11,6 @@ const Game: React.FC = () => {
   const [rows, setRows] = useState<string[][]>(
     Array(6).fill("").map(() => Array(selectedWord.name.length).fill(""))
   );
-
-  const [isLoggedIn, setIsLoggedIn]= useState(false);
-  const toggleLogin = () => {
-    setIsLoggedIn((prev) => !prev);
-  };
   const [currentRow, setCurrentRow] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const [userScore, setUserScore] = useState<number | null>(null);
@@ -24,6 +20,8 @@ const Game: React.FC = () => {
   );
   const [gameMessage, setGameMessage] = useState<string>("");
   const [incorrectRows, setIncorrectRows] = useState<boolean[]>(Array(6).fill(false));
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
     if (currentRow >= 2 && incorrectRows[currentRow - 1]) {
@@ -133,11 +131,17 @@ const Game: React.FC = () => {
       <div className="footer-container">
         <div className="alert-box pixel-corners-grey">{gameMessage}</div>
         
-        {/* Replace the previous div with MenuBox */}
-        <MenuBox checkWord={checkWord} isLoggedIn={isLoggedIn} toggleLogin={toggleLogin} />
+        {/* MenuBox */}
+        <MenuBox 
+          checkWord={checkWord} 
+          setShowLoginModal={setShowLoginModal} 
+          isLoggedIn={isLoggedIn} 
+          setIsLoggedIn={setIsLoggedIn} />
       </div>
 
       {userScore !== null && <h2>Final Score: {userScore}</h2>}
+
+      {showModal && <LoginModal showModal= {showModal} setShowLoginModal={setShowLoginModal} setIsLoggedIn={setIsLoggedIn} />}
     </div>
   );
 };
