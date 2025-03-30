@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
-body, h1 {
+body, h1, h2 {
     font-family: 'VT323', monospace;  
     font-weight: 400;
     font-style: normal; 
@@ -10,6 +10,7 @@ body, h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* This creates the stripes */
     background: linear-gradient(to bottom, #889828, #889828 50%, #b1b169 50%, #b1b169);
     background-size: 100% 20px;
     border-top: 40px inset #d5ef44;
@@ -33,21 +34,20 @@ body, h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 350px; /* Ensures words have enough room */
+    min-width: 350px;
     position: relative;
-    /* inner shadow along bottom and left*/
+    /* Inner shadow along bottom and left*/
     box-shadow: inset -10px -10px 0px -4px #2878B0;
-
   }
   
-  /* Offset for right-side cards */
+  /* Offset for cards */
   .word-card:nth-child(odd) {
     margin-top: -10px;
     margin-bottom: 10px;
   }
 
   .word-card:nth-child(even) {
-    margin-top: 20px; /* Slight vertical offset */
+    margin-top: 20px;
     margin-bottom: -10px;
   }
 
@@ -59,7 +59,7 @@ body, h1 {
   
   .input-row {
     display: flex;
-    gap: 8px; /* Spreads the input boxes apart */
+    gap: 8px;
     justify-content: center;
   }
   

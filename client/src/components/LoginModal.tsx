@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { mockUsers } from '../assets/tempWords/user';
+import '../styles/loginModal.css'
 
 interface LoginModalProps {
   showModal: boolean;
@@ -12,6 +13,28 @@ const LoginModal: React.FC<LoginModalProps> = ({ showModal, setShowLoginModal, s
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoggedIn, setLocalIsLoggedIn] = useState(false);
+
+  const closeModal = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      setShowLoginModal(false);
+    }
+  };
+
+  const handleClose = () => {
+    setShowLoginModal(false);
+  };
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowLoginModal(false);
+      }
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => {
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [setShowLoginModal]);
 
   const toggleLoginSignUp = () => {
     setIsLogin((prev) => !prev);
@@ -63,8 +86,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ showModal, setShowLoginModal, s
 
   return (
     showModal && (
-      <div className="modal">
-        <div className="modal-content">
+      <div className="modal" onClick={closeModal}>
+        <div className="modal-content pixel-corners-grey">
+          <button className="close-btn" onClick={handleClose}>X</button>
           <h2>{isLogin ? 'Login' : 'Sign Up'}</h2>
           <form onSubmit={handleSubmit}>
             <label>
