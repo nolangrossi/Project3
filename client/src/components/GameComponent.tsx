@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getRandomWord } from "./functions/wordSelector";
+import MenuBox from "./MenuBox";
+import LoginModal from "./LoginModal";
 import "../styles/game.css";
 import "../styles/pixelated.css";
 
@@ -9,7 +11,6 @@ const Game: React.FC = () => {
   const [rows, setRows] = useState<string[][]>(
     Array(6).fill("").map(() => Array(selectedWord.name.length).fill(""))
   );
-
   const [currentRow, setCurrentRow] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const [userScore, setUserScore] = useState<number | null>(null);
@@ -19,9 +20,10 @@ const Game: React.FC = () => {
   );
   const [gameMessage, setGameMessage] = useState<string>("");
   const [incorrectRows, setIncorrectRows] = useState<boolean[]>(Array(6).fill(false));
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
-    // Display hint only if the previous row was incorrect
     if (currentRow >= 2 && incorrectRows[currentRow - 1]) {
       const hintKey = `hintValue${currentRow - 1}` as keyof typeof selectedWord;
       if (selectedWord[hintKey]) {
@@ -79,8 +81,6 @@ const Game: React.FC = () => {
       setActiveIndex(cellIndex + 1);
     } else if (e.key === "ArrowLeft" && cellIndex > 0) {
       setActiveIndex(cellIndex - 1);
-    } else if (e.key === "Enter") {
-      checkWord();
     }
   };
 
@@ -88,16 +88,13 @@ const Game: React.FC = () => {
     <div className="game-container">
       <h1>Pokemon Word Guess Game</h1>
 
-      {/* Grid Layout for Word Cards */}
       <div className="grid-container">
         {rows.map((row, rowIndex) => (
           <div key={rowIndex} className="word-card pixel-corners-blue">
-            {/* Only show hint if the previous row was incorrect */}
             {rowIndex >= 1 && rowIndex <= 3 && incorrectRows[rowIndex - 1] && hints[rowIndex - 1] && (
               <span className="hint-label">Hint: {hints[rowIndex - 1]}</span>
             )}
 
-            {/* Make inputs spread out horizontally */}
             <div className="input-row">
               {row.map((cell, cellIndex) => (
                 <input
@@ -124,7 +121,6 @@ const Game: React.FC = () => {
               ))}
             </div>
 
-            {/* Image hints should appear on Card 5 and Card 6 in the top right */}
             {rowIndex === 4 || rowIndex === 5 ? (
               <div className="image-placeholder"></div>
             ) : null}
@@ -132,17 +128,20 @@ const Game: React.FC = () => {
         ))}
       </div>
 
-      {/* Submit and Alerts */}
       <div className="footer-container">
         <div className="alert-box pixel-corners-grey">{gameMessage}</div>
-        <div className="menu-box pixel-corners-red">
-        <button className="submit-button" onClick={checkWord}>
-          Submit
-        </button>
-        </div>
+        
+        {/* MenuBox */}
+        <MenuBox 
+          checkWord={checkWord} 
+          setShowLoginModal={setShowLoginModal} 
+          isLoggedIn={isLoggedIn} 
+          setIsLoggedIn={setIsLoggedIn} />
       </div>
 
       {userScore !== null && <h2>Final Score: {userScore}</h2>}
+
+      {showModal && <LoginModal showModal= {showModal} setShowLoginModal={setShowLoginModal} setIsLoggedIn={setIsLoggedIn} />}
     </div>
   );
 };
