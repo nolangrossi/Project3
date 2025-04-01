@@ -18,7 +18,7 @@ const startApolloServer = async () => {
   await server.start();
   await db();
 
-  const PORT = process.env.PORT || 3002;
+  const PORT = process.env.PORT || 3001;
   const app = express();
 
   app.use(express.urlencoded({ extended: false }));

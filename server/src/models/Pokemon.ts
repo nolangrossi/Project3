@@ -2,14 +2,14 @@ import { Schema , model, type Document } from 'mongoose';
 
 // Define the Pokémon schema
 export interface IPokemon extends Document {
-  id: number;
+  id: string;
   name: string;
   typing: string[];
 }
 
 const PokemonSchema = new Schema<IPokemon>({
   id: {
-    type: Number,
+    type: String,
     required: true,
     unique: true,
   },
