@@ -2,7 +2,7 @@ import { gql } from 'apollo-server';
 
 const typeDefs = gql`
   type Pokemon {
-    id: Int!
+    id: String!
     name: String!
     typing: [String!]!
   }
@@ -23,7 +23,7 @@ const typeDefs = gql`
     getAllPokemon: [Pokemon!]!
 
     # Fetch a single Pokémon by ID
-    getPokemonById(id: Int!): Pokemon
+    getPokemonById(id: String!): Pokemon
 
     # Fetch Pokémon by type
     getPokemonByType(type: String!): [Pokemon!]!
