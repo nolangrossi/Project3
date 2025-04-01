@@ -6,7 +6,6 @@ const resolvers = {
     getAllPokemon: async () => {
       try {
         const pokemons = await PokemonModel.find(); // Fetch all Pokémon from the database
-        console.log('Fetched Pokémon:', pokemons);
         return pokemons;
       } catch (error) {
         console.error('Error fetching all Pokémon:', error);
@@ -25,9 +24,20 @@ const resolvers = {
         throw new Error('Failed to fetch Pokémon');
       }
     },
+    // Fetch Pokémon by name
+    getPokemonByName: async (_: any, { name }: { name: string }) => {
+      try {
+        const pokemon = await PokemonModel.findOne({ name }); // Find Pokémon by name
+        console.log(`Fetched Pokémon with name ${name}:`, pokemon);
+        return pokemon;
+      } catch (error) {
+        console.error(`Error fetching Pokémon with name ${name}:`, error);
+        throw new Error('Failed to fetch Pokémon');
+      }
+    },
 
     // Fetch Pokémon by type
-    getPokemonByType: async (_: any, { type }: { type: string }) => {
+    getPokemonByTyping: async (_: any, { type }: { type: string }) => {
       try {
         const pokemons = await PokemonModel.find({ typing: type }); // Find Pokémon by type
         console.log(`Fetched Pokémon with type ${type}:`, pokemons);

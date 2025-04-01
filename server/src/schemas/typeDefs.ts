@@ -14,8 +14,11 @@ const typeDefs = gql`
     # Fetch a single Pokémon by ID
     getPokemonById(id: String!): Pokemon
 
-    # Fetch Pokémon by type
-    getPokemonByType(type: String!): [Pokemon!]!
+    # Fetch Pokémon by name
+    getPokemonByName(name: String!): Pokemon
+
+    # Fetch Pokémon by typing
+    getPokemonByTyping(typing: String!): [Pokemon!]!
     
     getRandomPokemon: Pokemon
   }
