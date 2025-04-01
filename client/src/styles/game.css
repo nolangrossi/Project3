@@ -46,59 +46,6 @@ h1 {
     align-items: center;
     min-width: 350px;
     position: relative;
-    /* Inner shadow along bottom and left*/
-    box-shadow: inset 0px -4px -10px -10px #2878B0;
-  }
-
-  .horizontal-border {
-    width: 100%;
-    position: absolute;
-    height: 4px;
-    left: 0;
-  }
-
-  .vertical-border {
-    width: 4px;
-    height: 100%;
-    position: absolute;
-    top: 0;
-  }
-
-  .top-border {
-    background-color: #80c0d8;
-    top: 0px;
-  }
-
-  .left-border {
-    background-color: #80c0d8;
-    left:0px;
-  }
-
-  .bottom-border {
-    background-color: #2878b0;
-    bottom: 0px;
-  }
-
-  .right-border {
-    background-color: #2878b0;
-    right:0px;
-  }
-
-  .horizontal-line {
-    width: 100%;
-    background-color: #80c0d8;
-    position: absolute;
-    left: 0;
-  }
-
-  .top-line {
-    height: 4px;
-    bottom: 25px;
-  }
-
-  .bottom-line {
-    height: 20px;
-    bottom: 0px;
   }
   
   /* Offset for cards */
@@ -164,7 +111,6 @@ h1 {
 
   .alert-box {
     background-color: white;
-    /* box-shadow: inset 0px 0px 0px 5px #706880; */
     color: black;
     padding: 10px;
     padding-top: 10px;
