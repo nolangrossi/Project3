@@ -101,6 +101,8 @@ const Game: React.FC = () => {
       <div className="grid-container">
         {rows.map((row, rowIndex) => (
           <div key={rowIndex} className="word-card pixel-corners-blue">
+            <div className="horizontal-border top-border"></div>
+            <div className="vertical-border left-border"></div>
             {rowIndex >= 1 && rowIndex <= 3 && incorrectRows[rowIndex - 1] && hints[rowIndex - 1] && (
               <span className="hint-label">Hint: {hints[rowIndex - 1]}</span>
             )}
@@ -130,6 +132,14 @@ const Game: React.FC = () => {
                 />
               ))}
             </div>
+            {rowIndex === 4 || rowIndex === 5 ? (
+              <div className="image-placeholder"></div>
+            ) : null}
+
+            <div className="horizontal-line top-line"></div>
+            <div className="horizontal-line bottom-line"></div>
+            <div className="horizontal-border bottom-border"></div>
+            <div className="vertical-border right-border"></div>
           </div>
         ))}
       </div>
