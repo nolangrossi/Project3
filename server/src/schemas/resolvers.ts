@@ -91,7 +91,7 @@ const resolvers = {
 
           const token = jwt.sign(
             { _id: newUser._id, username: newUser.username, email: newUser.email }, 
-            process.env.JWT_SECRET_KEY || '', 
+            process.env.JWT_SECRET || '', 
             { expiresIn: '1h' }
           );
 
