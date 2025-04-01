@@ -2,6 +2,8 @@ import { PokemonModel, UserModel } from '../models/index.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import User from '../models/User.js';
+import { signToken } from '../services/auth.js';
 
 dotenv.config();
 
@@ -13,13 +15,12 @@ interface Context {
   };
 }
 
-
 const resolvers = {
   Query: {
     // Fetch all Pokémon
     getAllPokemon: async () => {
       try {
-        const pokemons = await PokemonModel.find(); // Fetch all Pokémon from the database
+        const pokemons = await PokemonModel.find();
         console.log('Fetched Pokémon:', pokemons);
         return pokemons;
       } catch (error) {
@@ -28,10 +29,9 @@ const resolvers = {
       }
     },
 
-    // Fetch a single Pokémon by ID
     getPokemonById: async (_: any, { id }: { id: number }) => {
       try {
-        const pokemon = await PokemonModel.findOne({ id }); // Find Pokémon by ID
+        const pokemon = await PokemonModel.findOne({ id });
         console.log(`Fetched Pokémon with ID ${id}:`, pokemon);
         return pokemon;
       } catch (error) {
@@ -40,10 +40,9 @@ const resolvers = {
       }
     },
 
-    // Fetch Pokémon by type
     getPokemonByType: async (_: any, { type }: { type: string }) => {
       try {
-        const pokemons = await PokemonModel.find({ typing: type }); // Find Pokémon by type
+        const pokemons = await PokemonModel.find({ typing: type });
         console.log(`Fetched Pokémon with type ${type}:`, pokemons);
         return pokemons;
       } catch (error) {
@@ -51,99 +50,89 @@ const resolvers = {
         throw new Error('Failed to fetch Pokémon');
       }
     },
-    getRandomPokemon: async () => {
-        try {
-            const count = await PokemonModel.countDocuments();
-            const random = Math.floor(Math.random() * count);
-            const randomPokemon = await PokemonModel.findOne().skip(random);
-            console.log('Fetched random Pokémon:', randomPokemon);
-            return randomPokemon;
-        } catch (error) {
-            console.error('Error fetching random Pokémon:', error);
-            throw new Error('Failed to fetch random Pokémon');
-        }
-  },
 
-  getCurrentUser: async (_: any, __: any, context: Context) => {
-    if (!context.user) {
-      throw new Error('Unauthorized');
-    }
-    try {
-      const user = await UserModel.findById(context.user._id).select('-password')
-      return user;
-    } catch (error) {
-      console.error('Error finding user:', error);
-      throw new Error('Failed to find user');
-    }
-  },
+    getRandomPokemon: async () => {
+      try {
+        const count = await PokemonModel.countDocuments();
+        const random = Math.floor(Math.random() * count);
+        const randomPokemon = await PokemonModel.findOne().skip(random);
+        console.log('Fetched random Pokémon:', randomPokemon);
+        return randomPokemon;
+      } catch (error) {
+        console.error('Error fetching random Pokémon:', error);
+        throw new Error('Failed to fetch random Pokémon');
+      }
+    },
+
+    getCurrentUser: async (_: any, __: any, context: Context) => {
+      if (!context.user) {
+        throw new Error('Unauthorized');
+      }
+      try {
+        const user = await UserModel.findById(context.user._id).select('-password');
+        return user;
+      } catch (error) {
+        console.error('Error finding user:', error);
+        throw new Error('Failed to find user');
+      }
+    },
   },
 
   Mutation: {
     registerUser: async (_: any, { username, email, password }: 
-      {username: string; email: string; password: string }) => {
+      { username: string; email: string; password: string }) => {
         try {
           const existingUser = await UserModel.findOne({ email });
           if (existingUser) {
             throw new Error('Email already in use');
           }
-          const hashedPassword = await bcrypt.hash(password, 10);
-          const newUser = new UserModel({ username, email, password: hashedPassword});
+          const newUser = new UserModel({ username, email, password });
           await newUser.save();
 
-          const token = jwt.sign({ _id: newUser._id, username: newUser.username,
-             email: newUser.email }, process.env.JWT_SECRET_KEY || '', 
-             { expiresIn: '1h' });
+          const token = jwt.sign(
+            { _id: newUser._id, username: newUser.username, email: newUser.email }, 
+            process.env.JWT_SECRET_KEY || '', 
+            { expiresIn: '1h' }
+          );
 
-             return { token, user: newUser };
+          return { token, user: newUser };
         } catch (error: unknown) {
           if (error instanceof Error) {
-              console.error('Error registering user:', {
-                  message: error.message,
-                  stack: error.stack
-              });
-              throw new Error(`Failed to register user: ${error.message}`);
+            console.error('Error registering user:', {
+              message: error.message,
+              stack: error.stack
+            });
+            throw new Error(`Failed to register user: ${error.message}`);
           } else {
-              console.error('Unexpected error registering user:', error);
-              throw new Error('Failed to register user due to an unknown error');
+            console.error('Unexpected error registering user:', error);
+            throw new Error('Failed to register user due to an unknown error');
+          }
         }
-      }
     },
 
     loginUser: async (_: any, { email, password }: { email: string; password: string }) => {
-      try {
-        // Fetch user by email
-        const user = await UserModel.findOne({ email });
-        
-        // If no user found, throw error
-        if (!user) {
-          console.log(`User not found for email: ${email}`);
-          throw new Error('Invalid login');
-        }
-        
-        console.log(`Found user: ${user.username}`);
+      console.log("Attempting login for email:", email);
     
-        // Compare the provided password with the stored hashed password
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-          console.log(`Password mismatch for user: ${user.username}`);
-          throw new Error('Invalid login');
-        }
-    
-        // Generate JWT token
-        const token = jwt.sign(
-          { _id: user._id, username: user.username, email: user.email },
-          process.env.JWT_SECRET_KEY || '',
-          { expiresIn: '1h' }
-        );
-    
-        console.log('User logged in successfully');
-        return { token, user };
-      } catch (error) {
-        console.error('Error logging in:', error);
-        throw new Error('Failed to login');
+      const user = await User.findOne({ email });
+      if (!user) {
+        console.log("User not found for email:", email);
+        throw new Error("User not found");
       }
+    
+      console.log("Found user:", user.username);
+    
+      const validPassword = await bcrypt.compare(password, user.password);
+      if (!validPassword) {
+        console.log("Password mismatch for user:", user.username);
+        throw new Error("Invalid password");
+      }
+    
+      const token = signToken(user.email, user.username, user._id.toString());
+      console.log("Login successful for:", user.username);
+      
+      return { token, user };
     },
- }
+  }
 };
 
 export default resolvers;
