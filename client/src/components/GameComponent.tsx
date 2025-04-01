@@ -1,44 +1,51 @@
 import React, { useState, useEffect } from "react";
-import { getRandomWord } from "./functions/wordSelector";
+import { useQuery } from "@apollo/client";
+import { GETRANDOMPOKEMON } from "../utils/queries";
+import MenuBox from "./MenuBox";
+import LoginModal from "./LoginModal";
 import "../styles/game.css";
 import "../styles/pixelated.css";
 
 const Game: React.FC = () => {
-  const [selectedWord, _setSelectedWord] = useState(() => getRandomWord());
+  // Fetch random Pokémon using the GraphQL query
+  const { data, loading, error } = useQuery(GETRANDOMPOKEMON);
 
-  const [rows, setRows] = useState<string[][]>(
-    Array(6).fill("").map(() => Array(selectedWord.name.length).fill(""))
-  );
-
+  // State for the game
+  const [rows, setRows] = useState<string[][]>([]);
   const [currentRow, setCurrentRow] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const [userScore, setUserScore] = useState<number | null>(null);
   const [hints, setHints] = useState<string[]>([]);
-  const [colors, setColors] = useState<string[][]>(
-    Array(6).fill("").map(() => Array(selectedWord.name.length).fill(""))
-  );
+  const [colors, setColors] = useState<string[][]>([]);
   const [gameMessage, setGameMessage] = useState<string>("");
   const [incorrectRows, setIncorrectRows] = useState<boolean[]>(Array(6).fill(false));
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showModal, setShowLoginModal] = useState(false);
 
+  // Initialize the game when the Pokémon data is loaded
   useEffect(() => {
-    // Display hint only if the previous row was incorrect
-    if (currentRow >= 2 && incorrectRows[currentRow - 1]) {
-      const hintKey = `hintValue${currentRow - 1}` as keyof typeof selectedWord;
-      if (selectedWord[hintKey]) {
-        setHints((prev) => [...prev, selectedWord[hintKey] as string]);
-      }
+    if (data && data.getRandomPokemon) {
+      const selectedPokemon = data.getRandomPokemon;
+
+      // Initialize rows and colors based on the Pokémon name length
+      setRows(Array(6).fill("").map(() => Array(selectedPokemon.name.length).fill("")));
+      setColors(Array(6).fill("").map(() => Array(selectedPokemon.name.length).fill("")));
     }
-  }, [currentRow, selectedWord, incorrectRows]);
+  }, [data]);
 
   const checkWord = () => {
+    if (!data || !data.getRandomPokemon) return;
+
+    const selectedPokemon = data.getRandomPokemon;
     const guess = rows[currentRow].join("").toLowerCase();
-    if (guess.length !== selectedWord.name.length) {
+
+    if (guess.length !== selectedPokemon.name.length) {
       setGameMessage("Please fill all boxes.");
       return;
     }
 
     const newColors = [...colors];
-    const wordArr = selectedWord.name.toLowerCase().split("");
+    const wordArr = selectedPokemon.name.toLowerCase().split("");
     const guessArr = guess.split("");
     let isCorrect = true;
 
@@ -69,13 +76,13 @@ const Game: React.FC = () => {
         setActiveIndex(0);
         setGameMessage("Incorrect! Try again.");
       } else {
-        setGameMessage(`Game over! The word was: ${selectedWord.name}`);
+        setGameMessage(`Game over! The word was: ${selectedPokemon.name}`);
       }
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, cellIndex: number) => {
-    if (e.key === "ArrowRight" && cellIndex < selectedWord.name.length - 1) {
+    if (e.key === "ArrowRight" && cellIndex < rows[0].length - 1) {
       setActiveIndex(cellIndex + 1);
     } else if (e.key === "ArrowLeft" && cellIndex > 0) {
       setActiveIndex(cellIndex - 1);
@@ -84,20 +91,20 @@ const Game: React.FC = () => {
     }
   };
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error loading Pokémon data.</div>;
+
   return (
     <div className="game-container">
       <h1>Pokemon Word Guess Game</h1>
 
-      {/* Grid Layout for Word Cards */}
       <div className="grid-container">
         {rows.map((row, rowIndex) => (
           <div key={rowIndex} className="word-card pixel-corners-blue">
-            {/* Only show hint if the previous row was incorrect */}
             {rowIndex >= 1 && rowIndex <= 3 && incorrectRows[rowIndex - 1] && hints[rowIndex - 1] && (
               <span className="hint-label">Hint: {hints[rowIndex - 1]}</span>
             )}
 
-            {/* Make inputs spread out horizontally */}
             <div className="input-row">
               {row.map((cell, cellIndex) => (
                 <input
@@ -114,7 +121,7 @@ const Game: React.FC = () => {
                       const newRows = rows.map((r, _i) => [...r]);
                       newRows[rowIndex][cellIndex] = e.target.value.toUpperCase();
                       setRows(newRows);
-                      if (cellIndex < selectedWord.name.length - 1) {
+                      if (cellIndex < rows[0].length - 1) {
                         setActiveIndex(cellIndex + 1);
                       }
                     }
@@ -123,26 +130,29 @@ const Game: React.FC = () => {
                 />
               ))}
             </div>
-
-            {/* Image hints should appear on Card 5 and Card 6 in the top right */}
-            {rowIndex === 4 || rowIndex === 5 ? (
-              <div className="image-placeholder"></div>
-            ) : null}
           </div>
         ))}
       </div>
 
-      {/* Submit and Alerts */}
       <div className="footer-container">
         <div className="alert-box pixel-corners-grey">{gameMessage}</div>
-        <div className="menu-box pixel-corners-red">
-        <button className="submit-button" onClick={checkWord}>
-          Submit
-        </button>
-        </div>
+        <MenuBox
+          checkWord={checkWord}
+          setShowLoginModal={setShowLoginModal}
+          isLoggedIn={isLoggedIn}
+          setIsLoggedIn={setIsLoggedIn}
+        />
       </div>
 
       {userScore !== null && <h2>Final Score: {userScore}</h2>}
+
+      {showModal && (
+        <LoginModal
+          showModal={showModal}
+          setShowLoginModal={setShowLoginModal}
+          setIsLoggedIn={setIsLoggedIn}
+        />
+      )}
     </div>
   );
 };
