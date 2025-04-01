@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "npm run client:build && npm run server",
-    "start:dev": "concurrently \"npm run server:dev\" \"wait-on tcp:3001 && npm run client:dev\"",
+    "start:dev": "concurrently \"cd server && npm run watch\" \"wait-on tcp:3001 && cd client && npm run dev\"",
     "server": "cd server && npm start",
     "server:dev": "cd server && npm run dev",
     "server:build": "cd server && npm run build",
@@ -36,10 +36,11 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.25.1",
     "typescript": "^5.5.3",
-    "vitest": "^3.0.9",
+    "vitest": "^2.0.3",
     "wait-on": "^7.2.0"
   },
   "dependencies": {
+    "@apollo/client": "^3.13.5",
     "apollo-server": "^3.13.0",
     "graphql": "^16.10.0"
   }

@@ -1,18 +1,19 @@
 import './styles/App.css';
 import { Outlet } from 'react-router-dom';
-
+import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 // import Footer from './components/Footer';
 
+const client = new ApolloClient({
+  uri: '/graphql',
+  cache: new InMemoryCache(),
+});
 
 function App() {
   return (
-    <div className="flex-column justify-flex-start min-100-vh">
-      <div className="container">
-        <Outlet />
-      </div>
-      {/* <Footer /> */}
-    </div>
-  );
-}
+    <ApolloProvider client={client}>
+      <Outlet />
+    </ApolloProvider>
+    );
+  }
 
 export default App;
