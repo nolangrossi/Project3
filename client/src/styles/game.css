@@ -8,7 +8,7 @@ body, h1, h2, button {
 
 h1 {
   position: absolute;
-  top: 0;
+  top: -30px;
   font-size: 40px;
 }
 
@@ -26,10 +26,12 @@ h1 {
   }
   
   .grid-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3,auto);
     gap: 20px;
+    justify-content: center;
+    align-items: center;
     padding-top:10px;
   }
   
@@ -37,6 +39,7 @@ h1 {
     background-color: #3890d8;
     padding: 25px;
     padding-top: 30px;
+    padding-bottom: 40px;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
@@ -44,7 +47,58 @@ h1 {
     min-width: 350px;
     position: relative;
     /* Inner shadow along bottom and left*/
-    box-shadow: inset -10px -10px 0px -4px #2878B0;
+    box-shadow: inset 0px -4px -10px -10px #2878B0;
+  }
+
+  .horizontal-border {
+    width: 100%;
+    position: absolute;
+    height: 4px;
+    left: 0;
+  }
+
+  .vertical-border {
+    width: 4px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+  }
+
+  .top-border {
+    background-color: #80c0d8;
+    top: 0px;
+  }
+
+  .left-border {
+    background-color: #80c0d8;
+    left:0px;
+  }
+
+  .bottom-border {
+    background-color: #2878b0;
+    bottom: 0px;
+  }
+
+  .right-border {
+    background-color: #2878b0;
+    right:0px;
+  }
+
+  .horizontal-line {
+    width: 100%;
+    background-color: #80c0d8;
+    position: absolute;
+    left: 0;
+  }
+
+  .top-line {
+    height: 4px;
+    bottom: 25px;
+  }
+
+  .bottom-line {
+    height: 20px;
+    bottom: 0px;
   }
   
   /* Offset for cards */
