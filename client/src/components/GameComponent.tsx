@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
+
+// Functions
 import { GETRANDOMPOKEMON } from "../utils/queries";
 import { handleInputChange } from "./functions/inputNavigation";
+
+// Components
 import MenuBox from "./MenuBox";
 import LoginModal from "./LoginModal";
+
+// Styles
 import "../styles/game.css";
 import "../styles/pixelated.css";
 
@@ -36,20 +42,20 @@ const Game: React.FC = () => {
 
   const checkWord = () => {
     if (!data || !data.getRandomPokemon) return;
-
+  
     const selectedPokemon = data.getRandomPokemon;
     const guess = rows[currentRow].join("").toLowerCase();
-
+  
     if (guess.length !== selectedPokemon.name.length) {
       setGameMessage("Please fill all boxes.");
       return;
     }
-
-    const newColors = [...colors];
+  
     const wordArr = selectedPokemon.name.toLowerCase().split("");
     const guessArr = guess.split("");
     let isCorrect = true;
-
+    const newColors = [...colors];
+  
     guessArr.forEach((letter, i) => {
       if (letter === wordArr[i]) {
         newColors[currentRow][i] = "green";
@@ -61,9 +67,9 @@ const Game: React.FC = () => {
         isCorrect = false;
       }
     });
-
+  
     setColors(newColors);
-
+  
     if (isCorrect) {
       setUserScore(6 - currentRow);
       setGameMessage(`🎉 Congratulations! You won with a score of ${6 - currentRow}!`);
@@ -71,7 +77,7 @@ const Game: React.FC = () => {
       const newIncorrectRows = [...incorrectRows];
       newIncorrectRows[currentRow] = true;
       setIncorrectRows(newIncorrectRows);
-
+  
       if (currentRow < 5) {
         setCurrentRow(currentRow + 1);
         setActiveIndex(0);
@@ -81,6 +87,7 @@ const Game: React.FC = () => {
       }
     }
   };
+  
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, cellIndex: number) => {
     if (e.key === "ArrowRight" && cellIndex < rows[0].length - 1) {
