@@ -9,7 +9,7 @@ import { handleKeyDown } from "./functions/keyboardNavigation";
 
 // Components
 import MenuBox from "./MenuBox";
-import LoginModal from "./LoginModal";
+import LoginModal from "./modals/LoginModal";
 
 // Styles
 import "../styles/game.css";

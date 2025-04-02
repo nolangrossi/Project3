@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/statsModal.css";
+import "../../styles/statsModal.css";
 
 interface StatsModalProps {
   closeModal: () => void;
