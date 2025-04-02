@@ -85,12 +85,19 @@ const Game: React.FC = () => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, cellIndex: number) => {
     if (e.key === "ArrowRight" && cellIndex < rows[0].length - 1) {
       setActiveIndex(cellIndex + 1);
+      setTimeout(() => {
+        document.getElementById(`input-${currentRow}-${cellIndex + 1}`)?.focus();
+      }, 50);
     } else if (e.key === "ArrowLeft" && cellIndex > 0) {
       setActiveIndex(cellIndex - 1);
+      setTimeout(() => {
+        document.getElementById(`input-${currentRow}-${cellIndex - 1}`)?.focus();
+      }, 50);
     } else if (e.key === "Enter") {
-      checkWord();
+      // checkWord();
     }
-  };
+};
+
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading Pokémon data.</div>;
