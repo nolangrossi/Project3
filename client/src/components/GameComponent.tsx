@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { GETRANDOMPOKEMON } from "../utils/queries";
+import { handleInputChange } from "./functions/inputNavigation";
 import MenuBox from "./MenuBox";
 import LoginModal from "./LoginModal";
 import "../styles/game.css";
@@ -110,6 +111,7 @@ const Game: React.FC = () => {
             <div className="input-row">
               {row.map((cell, cellIndex) => (
                 <input
+                  id={`input-${rowIndex}-${cellIndex}`} // <-- Add a unique ID for direct focus control
                   key={cellIndex}
                   maxLength={1}
                   value={cell}
@@ -118,16 +120,9 @@ const Game: React.FC = () => {
                     backgroundColor: rowIndex < currentRow ? colors[rowIndex][cellIndex] : "white",
                   }}
                   disabled={rowIndex !== currentRow}
-                  onChange={(e) => {
-                    if (rowIndex === currentRow) {
-                      const newRows = rows.map((r, _i) => [...r]);
-                      newRows[rowIndex][cellIndex] = e.target.value.toUpperCase();
-                      setRows(newRows);
-                      if (cellIndex < rows[0].length - 1) {
-                        setActiveIndex(cellIndex + 1);
-                      }
-                    }
-                  }}
+                  onChange={(e) =>
+                    handleInputChange(e, rowIndex, cellIndex, rows, setRows, setActiveIndex)
+                  }
                   onKeyDown={(e) => handleKeyDown(e, cellIndex)}
                 />
               ))}
