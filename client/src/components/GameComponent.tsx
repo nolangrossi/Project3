@@ -1,3 +1,4 @@
+// Dependencies
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 
@@ -41,6 +42,9 @@ const Game: React.FC = () => {
     }
   }, [data]);
 
+  // Checks the word by letter individually, 
+  // sets the winning game state, 
+  // and changes colors of the input boxes
   const checkWord = () => {
     if (!data || !data.getRandomPokemon) return;
   
@@ -88,8 +92,6 @@ const Game: React.FC = () => {
       }
     }
   };
-  
-
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading Pokémon data.</div>;
