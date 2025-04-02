@@ -115,7 +115,9 @@ const Game: React.FC = () => {
 
       <div className="grid-container">
         {rows.map((row, rowIndex) => (
-          <div key={rowIndex} className="word-card pixel-corners-blue">
+          <div key={rowIndex} 
+          className={`word-card ${rowIndex === currentRow ? "pixel-corners-red" : "pixel-corners-blue"}`}
+          >
             <div className="horizontal-border top-border"></div>
             <div className="vertical-border left-border"></div>
             {rowIndex >= 1 && rowIndex <= 3 && incorrectRows[rowIndex - 1] && hints[rowIndex - 1] && (
