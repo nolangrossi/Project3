@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 // import '../styles/creditsModal.css';
-import '../styles/pixelated.css'
+import '../../styles/pixelated.css'
 
 interface CreditsModalProps {
   showModal: boolean;

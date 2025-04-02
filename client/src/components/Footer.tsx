@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import "../styles/footer.css";
-import CreditsModal from "./CreditsModal";
+import CreditsModal from "./modals/CreditsModal";
 
 const githubUsers = [
   {

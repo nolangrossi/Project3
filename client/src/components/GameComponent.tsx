@@ -9,7 +9,7 @@ import { handleKeyDown } from "./functions/keyboardNavigation";
 
 // Components
 import MenuBox from "./MenuBox";
-import LoginModal from "./LoginModal";
+import LoginModal from "./modals/LoginModal";
 
 // Styles
 import "../styles/game.css";
@@ -93,8 +93,16 @@ const Game: React.FC = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error loading Pokémon data.</div>;
+  if (loading) return (
+    <div className="game-container">
+      <h1>Loading...</h1>
+    </div>
+  );
+  if (error) return (
+    <div className="game-container">
+      <h1>Error loading Pokémon data.</h1>
+    </div>
+  );
 
   return (
     <div className="game-container">
