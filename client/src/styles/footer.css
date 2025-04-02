@@ -1,0 +1,71 @@
+/* Footer styling */
+.footer {
+    background-color: #3890d8;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    left:0;
+    box-shadow: inset -10px -10px 0px -4px #2878B0;
+    z-index: 10;
+  }
+  
+  /* Left Side: Trademark & Terms */
+  .footer-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  /* Center: GitHub Profiles */
+  .footer-center {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .github-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  /* Right Side: Credits & Employee Login */
+  .footer-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  
+  .footer-button {
+    background-color: #2878b0;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .footer-button:hover {
+    background-color: #21699f;
+  }
+  
+  /* Ensure footer sticks to the bottom even with dynamic content */
+  body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .main-content {
+    flex: 1;
+  }
+  
+  /* To prevent footer from overlapping content when it's long */
+  .footer {
+    position: relative;
+  }
+  

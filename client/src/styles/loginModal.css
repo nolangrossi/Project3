@@ -18,8 +18,6 @@
     border-radius: 8px;
     width: 300px;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    box-shadow: inset -10px -10px 0px -4px #2878B0;
   }
 
   .modal-input {
