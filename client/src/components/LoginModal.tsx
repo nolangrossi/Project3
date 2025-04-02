@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { mockUsers } from '../assets/tempWords/user';
-import '../styles/loginModal.css'
+import { useMutation } from '@apollo/client';
+import { LOGIN_USER, SIGNUP_USER } from '../utils/mutations';
+import '../styles/loginModal.css';
 
 interface LoginModalProps {
   showModal: boolean;
@@ -11,6 +12,7 @@ interface LoginModalProps {
 const LoginModal: React.FC<LoginModalProps> = ({ showModal, setShowLoginModal, setIsLoggedIn }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoggedIn, setLocalIsLoggedIn] = useState(false);
 
@@ -39,40 +41,46 @@ const LoginModal: React.FC<LoginModalProps> = ({ showModal, setShowLoginModal, s
   const toggleLoginSignUp = () => {
     setIsLogin((prev) => !prev);
     setUsername('');
+    setEmail('');
     setPassword('');
   };
 
-  const handleLogin = () => {
-    const user = mockUsers.find(
-      (user) => user.username === username && user.password === password
-    );
-    if (user) {
-      setIsLoggedIn(true);
-      setLocalIsLoggedIn(true);
-    } else {
+  const [loginMutation] = useMutation(LOGIN_USER);
+  const [signUpMutation] = useMutation(SIGNUP_USER);
+
+  const handleLogin = async () => {
+    try {
+      const { data } = await loginMutation({ variables: { email, password } });
+      if (data?.loginUser?.token) {
+        localStorage.setItem('token', data.loginUser.token);
+        setIsLoggedIn(true);
+        setLocalIsLoggedIn(true);
+      }
+    } catch (error) {
       alert('Invalid credentials');
-      setLocalIsLoggedIn(false);
+      console.error(error);
+    }
+  };
+
+  const handleSignUp = async () => {
+    try {
+      const { data } = await signUpMutation({ variables: { username, email, password } });
+      if (data.registerUser.token) {
+        localStorage.setItem('token', data.registerUser.token);
+        setIsLoggedIn(true);
+        setLocalIsLoggedIn(true);
+      }
+    } catch (error) {
+      alert('Sign-up failed');
+      console.error(error);
     }
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('token');
     setIsLoggedIn(false);
     setLocalIsLoggedIn(false);
     setShowLoginModal(false);
-  };
-
-  const handleSignUp = () => {
-    // Check if the username already exists
-    const userExists = mockUsers.some((user) => user.username === username);
-    if (userExists) {
-      alert('Username already exists');
-      return;
-    }
-
-    // Add the new user to mockUsers (temporarily for testing)
-    mockUsers.push({ id: mockUsers.length + 1, username, password });
-    alert('Sign-up successful');
-    setIsLogin(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -91,12 +99,23 @@ const LoginModal: React.FC<LoginModalProps> = ({ showModal, setShowLoginModal, s
           <button className="close-btn" onClick={handleClose}>X</button>
           <h2>{isLogin ? 'Login' : 'Sign Up'}</h2>
           <form onSubmit={handleSubmit}>
+            {!isLogin && (
+              <label className="modal-input">
+                Username:
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </label>
+            )}
             <label className="modal-input">
-              Username:
+              Email:
               <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </label>

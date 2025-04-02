@@ -6,6 +6,7 @@ import db from './config/connection.js';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { typeDefs, resolvers } from './schemas/index.js';
+import { authenticateToken } from './services/auth.js';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -24,8 +25,23 @@ const startApolloServer = async () => {
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
 
-  app.use('/graphql', expressMiddleware(server as any
-  ));
+  app.use(
+    '/graphql',
+    expressMiddleware(server, {
+      context: async ({ req }: { req: Request }) => {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (token) {
+          try {
+            const user = authenticateToken(token);
+            return { user };
+          } catch (error) {
+            console.error("Invalid token:", error);
+          }
+        }
+        return {};
+      },
+    })
+  );
 
   if (process.env.NODE_ENV === 'production') {
     const __filename = fileURLToPath(import.meta.url);

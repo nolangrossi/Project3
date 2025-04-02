@@ -9,3 +9,13 @@ export const GETRANDOMPOKEMON = gql`
         }
     }
 `;
+
+export const GETALLPOKEMON = gql`
+    query Query {
+        getAllPokemon {
+            id
+            name
+            typing
+        }
+    }
+`;

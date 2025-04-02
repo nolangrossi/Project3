@@ -132,6 +132,9 @@ const Game: React.FC = () => {
                 />
               ))}
             </div>
+            {rowIndex === 4 || rowIndex === 5 ? (
+              <div className="image-placeholder"></div>
+            ) : null}
 
             <div className="horizontal-line top-line"></div>
             <div className="horizontal-line bottom-line"></div>
