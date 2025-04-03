@@ -10,7 +10,7 @@
     "dev": "npx nodemon",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "nodemon dist/server.js",
-    "seed": "node dist/seeds/seed.js"
+    "seed": "node dist/seeds/seeds.js"
   },
   "nodemonConfig": {
     "watch": [
