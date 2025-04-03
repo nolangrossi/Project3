@@ -3,8 +3,9 @@
 // Think about moving these functions into a seperate file to be invoked on all the modals. Same code.
 
 // While I've tested this with MockData, and the username can be set (in the GameComponent Dom)
-// This needs to be tested with real logged in data (Currently no login data it seems)
-// Since it's checking for if the user is logged in to show what would be relevant stats.
+// This needs to be tested with real logged in data to get the log in status
+// (Currently no login data it seems) This should be retrieving that + the Username
+// Currently all the LoggedIn properties are bypassed in the commented code (Here and GameComponent.tsx)
 
 // Please look at mockStats.ts for what this document is looking for.
 import React, { useEffect } from 'react';
@@ -20,7 +21,7 @@ interface StatsModalProps {
     Scores_Last_Thirty_Days: number[];
   }[];
   currentUser: string;
-  isLoggedIn: boolean;
+  // isLoggedIn: boolean;
 }
 
 const StatsModal: React.FC<StatsModalProps> = ({
@@ -28,7 +29,7 @@ const StatsModal: React.FC<StatsModalProps> = ({
   setShowStatsModal,
   userData,
   currentUser,
-  isLoggedIn,
+  // isLoggedIn,
 }) => {
   const closeModal = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -64,21 +65,21 @@ const StatsModal: React.FC<StatsModalProps> = ({
   const currentUserIndex = userStats.findIndex(user => user.Username === currentUser);
   const currentUserStats = userStats[currentUserIndex];
 
-  if (!isLoggedIn) {
-    return (
-      <div className="modal" onClick={closeModal}>
-        <div className="modal-content pixel-corners-grey">
-          <div className="horizontal-border top-border"></div>
-          <div className="vertical-border left-border"></div>
-          <h2>Player Stats</h2>
-          <p>Please Log In or Sign Up to see your stats</p>
-          <button className="close-btn" onClick={handleClose}>► Close</button>
-          <div className="horizontal-border bottom-border"></div>
-          <div className="vertical-border right-border"></div>
-        </div>
-      </div>
-    );
-  }
+  // if (!isLoggedIn) {
+  //   return (
+  //     <div className="modal" onClick={closeModal}>
+  //       <div className="modal-content pixel-corners-grey">
+  //         <div className="horizontal-border top-border"></div>
+  //         <div className="vertical-border left-border"></div>
+  //         <h2>Player Stats</h2>
+  //         <p>Please Log In or Sign Up to see your stats</p>
+  //         <button className="close-btn" onClick={handleClose}>► Close</button>
+  //         <div className="horizontal-border bottom-border"></div>
+  //         <div className="vertical-border right-border"></div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (currentUserStats?.NoScoresInLastSeven) {
     return (
