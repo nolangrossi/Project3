@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { LOGIN_USER, SIGNUP_USER } from '../utils/mutations';
-import '../styles/loginModal.css';
+import { LOGIN_USER, SIGNUP_USER } from '../../utils/mutations';
+import '../../styles/loginModal.css';
 
 interface LoginModalProps {
   showModal: boolean;

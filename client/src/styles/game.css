@@ -8,7 +8,7 @@ body, h1, h2, button {
 
 h1 {
   position: absolute;
-  top: 0;
+  top: -30px;
   font-size: 40px;
 }
 
@@ -26,10 +26,12 @@ h1 {
   }
   
   .grid-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3,auto);
     gap: 20px;
+    justify-content: center;
+    align-items: center;
     padding-top:10px;
   }
   
@@ -37,14 +39,13 @@ h1 {
     background-color: #3890d8;
     padding: 25px;
     padding-top: 30px;
+    padding-bottom: 40px;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
     min-width: 350px;
     position: relative;
-    /* Inner shadow along bottom and left*/
-    box-shadow: inset -10px -10px 0px -4px #2878B0;
   }
   
   /* Offset for cards */
@@ -71,8 +72,8 @@ h1 {
   }
   
   .input-box {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     font-size: 24px;
     text-align: center;
     border-radius: 5px;
@@ -110,7 +111,6 @@ h1 {
 
   .alert-box {
     background-color: white;
-    /* box-shadow: inset 0px 0px 0px 5px #706880; */
     color: black;
     padding: 10px;
     padding-top: 10px;
