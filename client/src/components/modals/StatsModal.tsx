@@ -7,7 +7,11 @@
 // (Currently no login data it seems) This should be retrieving that + the Username
 // Currently all the LoggedIn properties are bypassed in the commented code (Here and GameComponent.tsx)
 
+//Bug 2: Array for 7-Week rankings seems to be calculating incorrectly...
+
+// 
 // Please look at mockStats.ts for what this document is looking for.
+//
 import React, { useEffect } from 'react';
 import '../../styles/pixelated.css';
 

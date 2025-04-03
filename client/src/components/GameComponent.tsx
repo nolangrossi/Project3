@@ -180,7 +180,7 @@ const Game: React.FC = () => {
         setShowStatsModal={() => {}} 
         userData={mockUserData} 
         // isLoggedIn={isLoggedIn}
-        currentUser="Player2" 
+        currentUser="Player4" 
         />
       )};
     </div>

@@ -23,5 +23,11 @@ export const mockUserData = [
       Scores_Last_Seven_Days: [6, 6, 6, 5, 4, 3, 2],
       Scores_Last_Thirty_Days: Array.from({ length: 30 }, () => Math.floor(Math.random() * 7)),
     },
+    {
+      UserID: "5",
+      Username: "TestPlayer",
+      Scores_Last_Seven_Days: [6, 6, 6, 5, 6, 5, 4],
+      Scores_Last_Thirty_Days: Array.from({ length: 30 }, () => Math.floor(Math.random() * 7)),
+    }
   ];
   
