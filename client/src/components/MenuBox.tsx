@@ -4,11 +4,12 @@ import "../styles/menuBox.css";
 interface MenuBoxProps {
   checkWord: () => void;
   setShowLoginModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowStatsModal: React.Dispatch<React.SetStateAction<boolean>>;
   isLoggedIn: boolean;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const MenuBox: React.FC<MenuBoxProps> = ({ checkWord, setShowLoginModal, isLoggedIn, setIsLoggedIn }) => {
+const MenuBox: React.FC<MenuBoxProps> = ({ checkWord, setShowLoginModal, setShowStatsModal, isLoggedIn, setIsLoggedIn }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const menuOptions = [
@@ -22,6 +23,7 @@ const MenuBox: React.FC<MenuBoxProps> = ({ checkWord, setShowLoginModal, isLogge
           }
         : () => setShowLoginModal(true), // Open LoginModal when not logged in
     },
+    { label: "Player Stats", action: () => setShowStatsModal(true)},
   ];
 
   useEffect(() => {
