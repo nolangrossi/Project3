@@ -1,4 +1,4 @@
-// Currently facing an issue where all methods of closing the window do not work.
+// Bug 1: Currently facing an issue where all methods of closing the window do not work.
 // Not sure why this is the case. handleClose and/or the useEffect should handle this
 // Think about moving these functions into a seperate file to be invoked on all the modals. Same code.
 
