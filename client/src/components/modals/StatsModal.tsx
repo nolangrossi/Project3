@@ -1,3 +1,12 @@
+// Currently facing an issue where all methods of closing the window do not work.
+// Not sure why this is the case. handleClose and/or the useEffect should handle this
+// Think about moving these functions into a seperate file to be invoked on all the modals. Same code.
+
+// While I've tested this with MockData, and the username can be set (in the GameComponent Dom)
+// This needs to be tested with real logged in data (Currently no login data it seems)
+// Since it's checking for if the user is logged in to show what would be relevant stats.
+
+// Please look at mockStats.ts for what this document is looking for.
 import React, { useEffect } from 'react';
 import '../../styles/pixelated.css';
 
