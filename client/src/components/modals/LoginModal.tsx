@@ -53,8 +53,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ showModal, setShowLoginModal, s
       const { data } = await loginMutation({ variables: { email, password } });
       if (data?.loginUser?.token) {
         localStorage.setItem('token', data.loginUser.token);
+        localStorage.setItem('username', data.loginUser.user.username);
+        localStorage.setItem('isLoggedIn', 'true');
         setIsLoggedIn(true);
         setLocalIsLoggedIn(true);
+        setUsername(data.loginUser.user.username);
       }
     } catch (error) {
       alert('Invalid credentials');
@@ -67,8 +70,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ showModal, setShowLoginModal, s
       const { data } = await signUpMutation({ variables: { username, email, password } });
       if (data.registerUser.token) {
         localStorage.setItem('token', data.registerUser.token);
+        localStorage.setItem('username', data.registerUser.user.username);
         setIsLoggedIn(true);
         setLocalIsLoggedIn(true);
+        setUsername(data.registerUser.user.username);
       }
     } catch (error) {
       alert('Sign-up failed');
@@ -78,10 +83,32 @@ const LoginModal: React.FC<LoginModalProps> = ({ showModal, setShowLoginModal, s
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    localStorage.setItem('isLoggedIn', 'false');
     setIsLoggedIn(false);
     setLocalIsLoggedIn(false);
+    setUsername('');
     setShowLoginModal(false);
+    window.location.reload();
   };
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    const storedUsername = localStorage.getItem('username');
+    const storedIsLoggedIn = localStorage.getItem('isLoggedIn');
+  
+    if (storedToken && storedUsername && storedIsLoggedIn === 'true') {
+      setIsLoggedIn(true);
+      setLocalIsLoggedIn(true);
+      setUsername(storedUsername);
+    } else {
+      setIsLoggedIn(false);
+      setLocalIsLoggedIn(false);
+      localStorage.removeItem('isLoggedIn'); // Remove if not actually logged in
+    }
+  }, []);
+  
+  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
