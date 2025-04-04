@@ -13,6 +13,16 @@ const typeDefs = gql`
   email: String!
   }
 
+  type UserStats {
+    user: User!
+    scores_last_7_days: [Int!]!
+    scores_last_30_days: [Int!]!
+  }
+
+  type MessageResponse {
+    message: String
+  }
+
   type AuthPayload {
   token: String!
   user: User!
@@ -34,6 +44,8 @@ const typeDefs = gql`
     getRandomPokemon: Pokemon
 
     getCurrentUser: User
+
+    getUserStats: UserStats
   }
 
   type Mutation {

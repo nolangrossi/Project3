@@ -4,6 +4,9 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import User from '../models/User.js';
 import { signToken } from '../services/auth.js';
+import { updateUserStats } from '../services/userStats.js';
+import  UserStats from '../models/UserStats.js';
+
 
 dotenv.config();
 
@@ -87,6 +90,19 @@ const resolvers = {
         throw new Error('Failed to find user');
       }
     },
+    getUserStats: async (_: any, __: any, context: Context) => {
+      if (!context.user) {
+        throw new Error('Unauthorized');
+      }
+
+      try {
+        const userStats = await UserStats.findOne({ user: context.user._id });
+        return userStats;
+      } catch (error) {
+        console.error('Error fetching user stats:', error);
+        throw new Error('Failed to fetch user stats');
+      }
+    },
   },
 
   Mutation: {
@@ -118,8 +134,23 @@ const resolvers = {
             console.error('Unexpected error registering user:', error);
             throw new Error('Failed to register user due to an unknown error');
           }
+          
         }
     },
+    trackUserStats: async (_: any, { score }: { score: number }, context: Context) => {
+      if (!context.user) {
+        throw new Error('Unauthorized');
+      }
+
+      try {
+        await updateUserStats(context.user._id, score);
+        return { message: 'User stats updated successfully' };
+      } catch (error) {
+        console.error('Error tracking user stats:', error);
+        throw new Error('Failed to track user stats');
+      }
+    },
+  },
 
     loginUser: async (_: any, { email, password }: { email: string; password: string }) => {
       console.log("Attempting login for email:", email);
@@ -143,7 +174,6 @@ const resolvers = {
       
       return { token, user };
     },
-  }
-};
+  };
 
 export default resolvers;
