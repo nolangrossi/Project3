@@ -179,8 +179,9 @@ const Game: React.FC = () => {
         />
       )}
       {showStatsModal && (
-        <StatsModal showModal={true} 
-        setShowStatsModal={() => {}} 
+        <StatsModal 
+        showModal={true} 
+        setShowStatsModal={setShowStatsModal} 
         userData={mockUserData} 
         // isLoggedIn={isLoggedIn}
         currentUser="Player4" 
