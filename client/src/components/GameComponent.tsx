@@ -20,10 +20,8 @@ import "../styles/pixelated.css";
 import { mockUserData } from './modals/mockStats'
 
 const Game: React.FC = () => {
-  // Fetch random Pokémon using the GraphQL query
-  const { data, loading, error } = useQuery(GETRANDOMPOKEMON);
+  const { data, loading, error, refetch } = useQuery(GETRANDOMPOKEMON);
 
-  // State for the game
   const [rows, setRows] = useState<string[][]>([]);
   const [currentRow, setCurrentRow] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -41,31 +39,50 @@ const Game: React.FC = () => {
     if (data && data.getRandomPokemon) {
       const selectedPokemon = data.getRandomPokemon;
 
-      // Initialize rows and colors based on the Pokémon name length
-      setRows(Array(6).fill("").map(() => Array(selectedPokemon.name.length).fill("")));
-      setColors(Array(6).fill("").map(() => Array(selectedPokemon.name.length).fill("")));
+      // Remove all special characters from the Pokémon's name
+      const sanitizedPokemonName = selectedPokemon.name.replace(/[^a-zA-Z]/g, "");
+
+      // Initialize rows and colors based on the sanitized Pokémon name length
+      setRows(Array(6).fill("").map(() => Array(sanitizedPokemonName.length).fill("")));
+      setColors(Array(6).fill("").map(() => Array(sanitizedPokemonName.length).fill("")));
+
+      // Set hints for the Pokémon's type(s)
+      setHints(selectedPokemon.typing);
+
+      setGameMessage(`Guess the Pokémon!`);
     }
   }, [data]);
 
-  // Checks the word by letter individually, 
-  // sets the winning game state, 
-  // and changes colors of the input boxes
+  // Reset the game state for replay
+  const resetGame = () => {
+    setRows([]);
+    setCurrentRow(0);
+    setActiveIndex(0);
+    setUserScore(null);
+    setHints([]);
+    setColors([]);
+    setGameMessage("");
+    setIncorrectRows(Array(6).fill(false));
+    refetch(); // Refetch a new Pokémon
+  };
+
   const checkWord = () => {
     if (!data || !data.getRandomPokemon) return;
-  
+
     const selectedPokemon = data.getRandomPokemon;
+    const sanitizedPokemonName = selectedPokemon.name.replace(/[^a-zA-Z]/g, "");
     const guess = rows[currentRow].join("").toLowerCase();
-  
-    if (guess.length !== selectedPokemon.name.length) {
+
+    if (guess.length !== sanitizedPokemonName.length) {
       setGameMessage("Please fill all boxes.");
       return;
     }
-  
-    const wordArr = selectedPokemon.name.toLowerCase().split("");
+
+    const wordArr = sanitizedPokemonName.toLowerCase().split("");
     const guessArr = guess.split("");
     let isCorrect = true;
     const newColors = [...colors];
-  
+
     guessArr.forEach((letter, i) => {
       if (letter === wordArr[i]) {
         newColors[currentRow][i] = "green";
@@ -77,9 +94,9 @@ const Game: React.FC = () => {
         isCorrect = false;
       }
     });
-  
+
     setColors(newColors);
-  
+
     if (isCorrect) {
       setUserScore(6 - currentRow);
       setGameMessage(`🎉 Congratulations! You won with a score of ${6 - currentRow}!`);
@@ -87,13 +104,13 @@ const Game: React.FC = () => {
       const newIncorrectRows = [...incorrectRows];
       newIncorrectRows[currentRow] = true;
       setIncorrectRows(newIncorrectRows);
-  
+
       if (currentRow < 5) {
         setCurrentRow(currentRow + 1);
         setActiveIndex(0);
         setGameMessage("Incorrect! Try again.");
       } else {
-        setGameMessage(`Game over! The word was: ${selectedPokemon.name}`);
+        setGameMessage(`Game over! The word was: ${sanitizedPokemonName}`);
       }
     }
   };
@@ -115,19 +132,28 @@ const Game: React.FC = () => {
 
       <div className="grid-container">
         {rows.map((row, rowIndex) => (
-          <div key={rowIndex} 
-          className={`word-card ${rowIndex === currentRow ? "pixel-corners-red" : "pixel-corners-blue"}`}
+          <div
+            key={rowIndex}
+            className={`word-card ${rowIndex === currentRow ? "pixel-corners-red" : "pixel-corners-blue"}`}
           >
             <div className="horizontal-border top-border"></div>
             <div className="vertical-border left-border"></div>
+
+            {/* Display a single type image as a hint */}
             {rowIndex >= 1 && rowIndex <= 3 && incorrectRows[rowIndex - 1] && hints[rowIndex - 1] && (
-              <span className="hint-label">Hint: {hints[rowIndex - 1]}</span>
+              <div className="types-container">
+                <img
+                  src={`/assets/types/${hints[rowIndex - 1].toLowerCase()}.svg`} // Show one type based on the row index
+                  alt={hints[rowIndex - 1]}
+                  className="type-icon"
+                />
+              </div>
             )}
 
             <div className="input-row">
               {row.map((cell, cellIndex) => (
                 <input
-                  id={`input-${rowIndex}-${cellIndex}`} // <-- Add a unique ID for direct focus control
+                  id={`input-${rowIndex}-${cellIndex}`}
                   key={cellIndex}
                   maxLength={1}
                   value={cell}
@@ -142,11 +168,8 @@ const Game: React.FC = () => {
                   onKeyDown={(e) => handleKeyDown(e, rowIndex, cellIndex, rows, setRows, setActiveIndex)}
                 />
               ))}
+              
             </div>
-            {rowIndex === 4 || rowIndex === 5 ? (
-              <div className="image-placeholder"></div>
-            ) : null}
-
             <div className="horizontal-line top-line"></div>
             <div className="horizontal-line bottom-line"></div>
             <div className="horizontal-border bottom-border"></div>
@@ -159,14 +182,17 @@ const Game: React.FC = () => {
         <div className="alert-box pixel-corners-grey">{gameMessage}</div>
         <MenuBox
           checkWord={checkWord}
+          resetGame={resetGame} // Pass resetGame to MenuBox
           setShowLoginModal={setShowLoginModal}
           setShowStatsModal={setShowStatsModal}
           isLoggedIn={isLoggedIn}
           setIsLoggedIn={setIsLoggedIn}
+          userScore={userScore} // Pass userScore to determine if "Play Again" should be shown
         />
       </div>
 
-      {userScore !== null && <h2>Final Score: {userScore}</h2>}
+      {/* {userScore !== null && <h2>Final Score: {userScore}</h2>} */}
+
 
       {showLoginModal && (
         <LoginModal
@@ -179,10 +205,9 @@ const Game: React.FC = () => {
         <StatsModal showModal={true} 
         setShowStatsModal={() => {}} 
         userData={mockUserData} 
-        // isLoggedIn={isLoggedIn}
         currentUser="Player4" 
         />
-      )};
+      )}
     </div>
   );
 };

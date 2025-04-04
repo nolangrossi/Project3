@@ -25,3 +25,11 @@
     padding-left: 10px; /* Ensures text stays in place */
     width: 100%; /* Keeps buttons aligned */
   }
+
+  .menu-controls-hint {
+    margin-top: 50px;
+    font-size: 15px;
+    color: #fff;
+    text-align: center;
+    /* opacity: 0.8; */
+  }
