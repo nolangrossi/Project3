@@ -10,10 +10,15 @@ import { handleKeyDown } from "./functions/keyboardNavigation";
 // Components
 import MenuBox from "./MenuBox";
 import LoginModal from "./modals/LoginModal";
+import StatsModal from "./modals/StatsModal";
+import InstructionsModal from "./modals/InstructionsModal";
 
 // Styles
 import "../styles/game.css";
 import "../styles/pixelated.css";
+
+// Temporary Import For Mock Data
+import { mockUserData } from './modals/mockStats'
 
 const Game: React.FC = () => {
   // Fetch random Pokémon using the GraphQL query
@@ -29,7 +34,9 @@ const Game: React.FC = () => {
   const [gameMessage, setGameMessage] = useState<string>("");
   const [incorrectRows, setIncorrectRows] = useState<boolean[]>(Array(6).fill(false));
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showModal, setShowLoginModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showStatsModal, setShowStatsModal] = useState(false);
+  const [showInstructionsModal, setShowInstructionsModal] = useState(false);
 
   // Initialize the game when the Pokémon data is loaded
   useEffect(() => {
@@ -155,6 +162,8 @@ const Game: React.FC = () => {
         <MenuBox
           checkWord={checkWord}
           setShowLoginModal={setShowLoginModal}
+          setShowStatsModal={setShowStatsModal}
+          setShowInstructionsModal={setShowInstructionsModal}
           isLoggedIn={isLoggedIn}
           setIsLoggedIn={setIsLoggedIn}
         />
@@ -162,11 +171,26 @@ const Game: React.FC = () => {
 
       {userScore !== null && <h2>Final Score: {userScore}</h2>}
 
-      {showModal && (
+      {showLoginModal && (
         <LoginModal
-          showModal={showModal}
+          showLoginModal={showLoginModal}
           setShowLoginModal={setShowLoginModal}
           setIsLoggedIn={setIsLoggedIn}
+        />
+      )}
+      {showStatsModal && (
+        <StatsModal 
+        showModal={true} 
+        setShowStatsModal={setShowStatsModal} 
+        userData={mockUserData} 
+        // isLoggedIn={isLoggedIn}
+        currentUser="Player4" 
+        />
+      )}
+      {showInstructionsModal && (
+        <InstructionsModal 
+        showInstructionsModal={showInstructionsModal}
+        setShowInstructionsModal={setShowInstructionsModal}
         />
       )}
     </div>

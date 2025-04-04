@@ -4,12 +4,12 @@ import { LOGIN_USER, SIGNUP_USER } from '../../utils/mutations';
 import '../../styles/loginModal.css';
 
 interface LoginModalProps {
-  showModal: boolean;
+  showLoginModal: boolean;
   setShowLoginModal: React.Dispatch<React.SetStateAction<boolean>>;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ showModal, setShowLoginModal, setIsLoggedIn }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ showLoginModal, setShowLoginModal, setIsLoggedIn }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -120,7 +120,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ showModal, setShowLoginModal, s
   };
 
   return (
-    showModal && (
+    showLoginModal && (
       <div className="modal" onClick={closeModal}>
         <div className="modal-content pixel-corners-grey">
           <button className="close-btn" onClick={handleClose}>X</button>
