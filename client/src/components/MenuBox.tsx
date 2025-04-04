@@ -5,11 +5,19 @@ interface MenuBoxProps {
   checkWord: () => void;
   setShowLoginModal: React.Dispatch<React.SetStateAction<boolean>>;
   setShowStatsModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowInstructionsModal: React.Dispatch<React.SetStateAction<boolean>>;
   isLoggedIn: boolean;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const MenuBox: React.FC<MenuBoxProps> = ({ checkWord, setShowLoginModal, setShowStatsModal, isLoggedIn, setIsLoggedIn }) => {
+const MenuBox: React.FC<MenuBoxProps> = ({ 
+  checkWord, 
+  setShowLoginModal, 
+  setShowStatsModal, 
+  setShowInstructionsModal, 
+  isLoggedIn, 
+  setIsLoggedIn 
+}) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const menuOptions = [
@@ -24,6 +32,7 @@ const MenuBox: React.FC<MenuBoxProps> = ({ checkWord, setShowLoginModal, setShow
         : () => setShowLoginModal(true), // Open LoginModal when not logged in
     },
     { label: "Player Stats", action: () => setShowStatsModal(true)},
+    { label: "Instructions", action: () => setShowInstructionsModal(true)},
   ];
 
   useEffect(() => {

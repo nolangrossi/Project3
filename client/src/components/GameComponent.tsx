@@ -11,6 +11,7 @@ import { handleKeyDown } from "./functions/keyboardNavigation";
 import MenuBox from "./MenuBox";
 import LoginModal from "./modals/LoginModal";
 import StatsModal from "./modals/StatsModal";
+import InstructionsModal from "./modals/InstructionsModal";
 
 // Styles
 import "../styles/game.css";
@@ -35,6 +36,7 @@ const Game: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showStatsModal, setShowStatsModal] = useState(false);
+  const [showInstructionsModal, setShowInstructionsModal] = useState(false);
 
   // Initialize the game when the Pokémon data is loaded
   useEffect(() => {
@@ -161,6 +163,7 @@ const Game: React.FC = () => {
           checkWord={checkWord}
           setShowLoginModal={setShowLoginModal}
           setShowStatsModal={setShowStatsModal}
+          setShowInstructionsModal={setShowInstructionsModal}
           isLoggedIn={isLoggedIn}
           setIsLoggedIn={setIsLoggedIn}
         />
@@ -176,13 +179,20 @@ const Game: React.FC = () => {
         />
       )}
       {showStatsModal && (
-        <StatsModal showModal={true} 
-        setShowStatsModal={() => {}} 
+        <StatsModal 
+        showModal={true} 
+        setShowStatsModal={setShowStatsModal} 
         userData={mockUserData} 
         // isLoggedIn={isLoggedIn}
         currentUser="Player4" 
         />
-      )};
+      )}
+      {showInstructionsModal && (
+        <InstructionsModal 
+        showInstructionsModal={showInstructionsModal}
+        setShowInstructionsModal={setShowInstructionsModal}
+        />
+      )}
     </div>
   );
 };
