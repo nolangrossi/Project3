@@ -36,7 +36,6 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ showModal, setShowCreditsMo
         <div className="modal-content pixel-corners-grey">
         <div className="horizontal-border top-border"></div>
         <div className="vertical-border left-border"></div>
-          <button className="close-btn" onClick={handleClose}>X</button>
           <h2>Credits</h2>
           <p> &copy; Nintendo, Game Freak, and The Pokémon Company</p>
           <p></p>
@@ -44,7 +43,9 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ showModal, setShowCreditsMo
             copyrights of Nintendo, Game Freak, and The Pokémon Company. This fan project is 
             not affiliated with, endorsed by, or approved by any of these companies. 
             It is created solely for fan enjoyment and educational purposes. No copyright 
-            infringement is intended.</p>
+            infringement is intended.
+          </p>
+          <button className="close-btn" onClick={handleClose}>► Close</button>
           <div className="horizontal-line top-line"></div>
           <div className="horizontal-line bottom-line"></div>
           <div className="horizontal-border bottom-border"></div>
