@@ -1,27 +1,25 @@
-// services/userStats.js
 import UserStats from '../models/UserStats.js';
 
-export const updateUserStats = async (userId: string, score: number) => {
-  try {
-    // Find or create user stats
+export const updateUserStats = async (userId: string, score: number): Promise<void> => {
+    try {
     let userStats = await UserStats.findOne({ user: userId });
+
     if (!userStats) {
-      userStats = new UserStats({ user: userId, scores_last_7_days: [], scores_last_30_days: [] });
+      userStats = new UserStats({ user: userId, scores: [] });
     }
 
-    // Update scores for the last 7 days
-    userStats.scores_last_7_days.unshift(score);
-    if (userStats.scores_last_7_days.length > 7) {
-      userStats.scores_last_7_days.pop(); // Keep only the last 7 scores
-    }
+    // Add new score with timestamp
+    userStats.scores.unshift({ value: score, date: new Date() });
 
-    // Update scores for the last 30 days
-    userStats.scores_last_30_days.unshift(score);
-    if (userStats.scores_last_30_days.length > 30) {
-      userStats.scores_last_30_days.pop(); // Keep only the last 30 scores
-    }
-
-    // Save the updated stats
+    // Optionally: clean up old scores (e.g., > 60 days old) to reduce DB bloat
+    const sixtyDaysAgo = new Date();
+    sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+    userStats.scores.splice(
+        0,
+        userStats.scores.length,
+        ...userStats.scores.filter((s) => new Date(s.date) > sixtyDaysAgo)
+      );
+      
     await userStats.save();
     console.log('User stats updated:', userStats);
   } catch (error) {

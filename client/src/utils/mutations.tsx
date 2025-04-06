@@ -24,4 +24,12 @@ export const SIGNUP_USER = gql`
     }
   }
 `;
+export const TRACK_USER_STATS = gql`
+  mutation TrackUserStats($score: Int!) {
+    trackUserStats(score: $score) {
+      message
+    }
+  }
+`;
+
 

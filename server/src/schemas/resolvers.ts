@@ -5,8 +5,7 @@ import dotenv from 'dotenv';
 import User from '../models/User.js';
 import { signToken } from '../services/auth.js';
 import { updateUserStats } from '../services/userStats.js';
-import  UserStats from '../models/UserStats.js';
-
+import UserStats from '../models/UserStats.js';
 
 dotenv.config();
 
@@ -20,7 +19,6 @@ interface Context {
 
 const resolvers = {
   Query: {
-    // Fetch all Pokémon
     getAllPokemon: async () => {
       try {
         const pokemons = await PokemonModel.find();
@@ -41,10 +39,10 @@ const resolvers = {
         throw new Error('Failed to fetch Pokémon');
       }
     },
-    // Fetch Pokémon by name
+
     getPokemonByName: async (_: any, { name }: { name: string }) => {
       try {
-        const pokemon = await PokemonModel.findOne({ name }); // Find Pokémon by name
+        const pokemon = await PokemonModel.findOne({ name });
         console.log(`Fetched Pokémon with name ${name}:`, pokemon);
         return pokemon;
       } catch (error) {
@@ -53,7 +51,6 @@ const resolvers = {
       }
     },
 
-    // Fetch Pokémon by type
     getPokemonByTyping: async (_: any, { type }: { type: string }) => {
       try {
         const pokemons = await PokemonModel.find({ typing: type });
@@ -90,19 +87,48 @@ const resolvers = {
         throw new Error('Failed to find user');
       }
     },
+
     getUserStats: async (_: any, __: any, context: Context) => {
       if (!context.user) {
         throw new Error('Unauthorized');
       }
-
+    
       try {
         const userStats = await UserStats.findOne({ user: context.user._id });
-        return userStats;
+    
+        if (!userStats) {
+          throw new Error('User stats not found');
+        }
+    
+        const now = new Date();
+        const sevenDaysAgo = new Date(now);
+        const thirtyDaysAgo = new Date(now);
+        sevenDaysAgo.setDate(now.getDate() - 7);
+        thirtyDaysAgo.setDate(now.getDate() - 30);
+    
+        const scores_last_7_days = userStats.scores
+          .filter((s) => new Date(s.date) >= sevenDaysAgo)
+          .map((s) => s.value);
+    
+        const scores_last_30_days = userStats.scores
+          .filter((s) => new Date(s.date) >= thirtyDaysAgo)
+          .map((s) => s.value);
+    
+        return {
+          user: {
+            _id: context.user._id,
+            username: context.user.username,
+          },
+          scores_last_7_days,
+          scores_last_30_days,
+        };
       } catch (error) {
         console.error('Error fetching user stats:', error);
         throw new Error('Failed to fetch user stats');
       }
     },
+    
+    
   },
 
   Mutation: {
@@ -134,23 +160,8 @@ const resolvers = {
             console.error('Unexpected error registering user:', error);
             throw new Error('Failed to register user due to an unknown error');
           }
-          
         }
     },
-    trackUserStats: async (_: any, { score }: { score: number }, context: Context) => {
-      if (!context.user) {
-        throw new Error('Unauthorized');
-      }
-
-      try {
-        await updateUserStats(context.user._id, score);
-        return { message: 'User stats updated successfully' };
-      } catch (error) {
-        console.error('Error tracking user stats:', error);
-        throw new Error('Failed to track user stats');
-      }
-    },
-  },
 
     loginUser: async (_: any, { email, password }: { email: string; password: string }) => {
       console.log("Attempting login for email:", email);
@@ -174,6 +185,25 @@ const resolvers = {
       
       return { token, user };
     },
-  };
+
+    trackUserStats: async (_: any, { score }: { score: number }, context: Context) => {
+      if (!context.user) {
+        throw new Error('Unauthorized');
+      }
+
+      try {
+        await updateUserStats(context.user._id, score);
+        console.log('User stats updated:', {
+          user: context.user.username,
+          score,
+        });
+        return { message: 'User stats updated successfully' };
+      } catch (error) {
+        console.error('Error tracking user stats:', error);
+        throw new Error('Failed to track user stats');
+      }
+    },
+  },
+};
 
 export default resolvers;

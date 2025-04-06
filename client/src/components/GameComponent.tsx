@@ -1,9 +1,10 @@
 // Dependencies
 import React, { useState, useEffect } from "react";
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 
 // Functions
-import { GETRANDOMPOKEMON } from "../utils/queries";
+import { GETRANDOMPOKEMON, GET_USER_STATS } from "../utils/queries";
+import { TRACK_USER_STATS } from "../utils/mutations";
 import { handleInputChange } from "./functions/inputNavigation";
 import { handleKeyDown } from "./functions/keyboardNavigation";
 
@@ -17,12 +18,13 @@ import InstructionsModal from "./modals/InstructionsModal";
 import "../styles/game.css";
 import "../styles/pixelated.css";
 
-// Temporary Import For Mock Data
-import { mockUserData } from './modals/mockStats'
-
 const Game: React.FC = () => {
-  // Fetch random Pokémon using the GraphQL query
+  // Fetch Pokémon and User Stats
   const { data, loading, error } = useQuery(GETRANDOMPOKEMON);
+  const { data: userStatsData } = useQuery(GET_USER_STATS);
+
+  // Mutation to track stats
+  const [trackUserStats] = useMutation(TRACK_USER_STATS);
 
   // State for the game
   const [rows, setRows] = useState<string[][]>([]);
@@ -38,36 +40,32 @@ const Game: React.FC = () => {
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [showInstructionsModal, setShowInstructionsModal] = useState(false);
 
-  // Initialize the game when the Pokémon data is loaded
+  // Initialize the game when Pokémon data loads
   useEffect(() => {
-    if (data && data.getRandomPokemon) {
+    if (data?.getRandomPokemon) {
       const selectedPokemon = data.getRandomPokemon;
-
-      // Initialize rows and colors based on the Pokémon name length
       setRows(Array(6).fill("").map(() => Array(selectedPokemon.name.length).fill("")));
       setColors(Array(6).fill("").map(() => Array(selectedPokemon.name.length).fill("")));
     }
   }, [data]);
 
-  // Checks the word by letter individually, 
-  // sets the winning game state, 
-  // and changes colors of the input boxes
-  const checkWord = () => {
-    if (!data || !data.getRandomPokemon) return;
-  
+  // Check word and update score
+  const checkWord = async () => {
+    if (!data?.getRandomPokemon) return;
+
     const selectedPokemon = data.getRandomPokemon;
     const guess = rows[currentRow].join("").toLowerCase();
-  
+
     if (guess.length !== selectedPokemon.name.length) {
       setGameMessage("Please fill all boxes.");
       return;
     }
-  
+
     const wordArr = selectedPokemon.name.toLowerCase().split("");
     const guessArr = guess.split("");
     let isCorrect = true;
     const newColors = [...colors];
-  
+
     guessArr.forEach((letter, i) => {
       if (letter === wordArr[i]) {
         newColors[currentRow][i] = "green";
@@ -79,17 +77,28 @@ const Game: React.FC = () => {
         isCorrect = false;
       }
     });
-  
+
     setColors(newColors);
-  
+
     if (isCorrect) {
-      setUserScore(6 - currentRow);
-      setGameMessage(`🎉 Congratulations! You won with a score of ${6 - currentRow}!`);
+      const finalScore = 6 - currentRow;
+      setUserScore(finalScore);
+      setGameMessage(`🎉 Congratulations! You won with a score of ${finalScore}!`);
+
+      // Send score to backend
+      try {
+        await trackUserStats({
+          variables: { score: finalScore },
+        });
+        console.log("Score successfully tracked!");
+      } catch (err) {
+        console.error("Error tracking score:", err);
+      }
     } else {
       const newIncorrectRows = [...incorrectRows];
       newIncorrectRows[currentRow] = true;
       setIncorrectRows(newIncorrectRows);
-  
+
       if (currentRow < 5) {
         setCurrentRow(currentRow + 1);
         setActiveIndex(0);
@@ -100,16 +109,20 @@ const Game: React.FC = () => {
     }
   };
 
-  if (loading) return (
-    <div className="game-container">
-      <h1>Loading...</h1>
-    </div>
-  );
-  if (error) return (
-    <div className="game-container">
-      <h1>Error loading Pokémon data.</h1>
-    </div>
-  );
+  console.log("userStatsData", JSON.stringify(userStatsData, null, 2));
+
+  if (loading)
+    return (
+      <div className="game-container">
+        <h1>Loading...</h1>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="game-container">
+        <h1>Error loading Pokémon data.</h1>
+      </div>
+    );
 
   return (
     <div className="game-container">
@@ -117,8 +130,9 @@ const Game: React.FC = () => {
 
       <div className="grid-container">
         {rows.map((row, rowIndex) => (
-          <div key={rowIndex} 
-          className={`word-card ${rowIndex === currentRow ? "pixel-corners-red" : "pixel-corners-blue"}`}
+          <div
+            key={rowIndex}
+            className={`word-card ${rowIndex === currentRow ? "pixel-corners-red" : "pixel-corners-blue"}`}
           >
             <div className="horizontal-border top-border"></div>
             <div className="vertical-border left-border"></div>
@@ -129,7 +143,7 @@ const Game: React.FC = () => {
             <div className="input-row">
               {row.map((cell, cellIndex) => (
                 <input
-                  id={`input-${rowIndex}-${cellIndex}`} // <-- Add a unique ID for direct focus control
+                  id={`input-${rowIndex}-${cellIndex}`}
                   key={cellIndex}
                   maxLength={1}
                   value={cell}
@@ -145,9 +159,6 @@ const Game: React.FC = () => {
                 />
               ))}
             </div>
-            {rowIndex === 4 || rowIndex === 5 ? (
-              <div className="image-placeholder"></div>
-            ) : null}
 
             <div className="horizontal-line top-line"></div>
             <div className="horizontal-line bottom-line"></div>
@@ -178,19 +189,31 @@ const Game: React.FC = () => {
           setIsLoggedIn={setIsLoggedIn}
         />
       )}
-      {showStatsModal && (
-        <StatsModal 
-        showModal={true} 
-        setShowStatsModal={setShowStatsModal} 
-        userData={mockUserData} 
-        // isLoggedIn={isLoggedIn}
-        currentUser="Player4" 
-        />
-      )}
+{showStatsModal && (
+  <StatsModal
+    showModal={true}
+    setShowStatsModal={setShowStatsModal}
+    userData={
+      userStatsData?.getUserStats
+        ? [
+            {
+              UserID: userStatsData.getUserStats.user._id,
+              Username: userStatsData.getUserStats.user.username,
+              Scores_Last_Seven_Days: userStatsData.getUserStats.scores_last_7_days,
+              Scores_Last_Thirty_Days: userStatsData.getUserStats.scores_last_30_days,
+            },
+          ]
+        : []
+    }
+    currentUser={userStatsData?.getUserStats?.user?.username || 'Guest'}
+  />
+)}
+
+
       {showInstructionsModal && (
-        <InstructionsModal 
-        showInstructionsModal={showInstructionsModal}
-        setShowInstructionsModal={setShowInstructionsModal}
+        <InstructionsModal
+          showInstructionsModal={showInstructionsModal}
+          setShowInstructionsModal={setShowInstructionsModal}
         />
       )}
     </div>

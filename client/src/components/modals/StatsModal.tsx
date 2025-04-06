@@ -4,19 +4,19 @@ import '../../styles/pixelated.css';
 interface StatsModalProps {
   showModal: boolean;
   setShowStatsModal: React.Dispatch<React.SetStateAction<boolean>>;
-  userData: {
+  userData?: {
     UserID: string;
     Username: string;
     Scores_Last_Seven_Days: number[];
     Scores_Last_Thirty_Days: number[];
-  }[];
+  } [];
   currentUser: string;
 }
 
 const StatsModal: React.FC<StatsModalProps> = ({
   showModal,
   setShowStatsModal,
-  userData,
+  userData = [], // Default empty array to prevent errors
   currentUser,
 }) => {
   const closeModal = (e: React.MouseEvent) => {
@@ -41,31 +41,47 @@ const StatsModal: React.FC<StatsModalProps> = ({
     };
   }, [setShowStatsModal]);
 
-  const userStats = userData.map(user => ({
-    Username: user.Username,
-    SevenDayAvg: user.Scores_Last_Seven_Days.reduce((a, b) => a + b, 0) / 7,
-    ThirtyDayAvg: user.Scores_Last_Thirty_Days.reduce((a, b) => a + b, 0) / 30,
-    HighestToday: user.Scores_Last_Seven_Days[user.Scores_Last_Seven_Days.length - 1],
-    NoScoresInLastSeven: user.Scores_Last_Seven_Days.every(score => score === 0),
-  }));
-
-  // Sorting users by 7-day average for leaderboard
-  const sortedUserStats = userStats.sort((a, b) => b.SevenDayAvg - a.SevenDayAvg);
-
-  const currentUserIndex = sortedUserStats.findIndex(user => user.Username === currentUser);
-  const currentUserStats = sortedUserStats[currentUserIndex];
-
-  if (currentUserStats?.NoScoresInLastSeven) {
+  // Ensure userData is available
+  if (!userData || userData.length === 0) {
     return (
       <div className="modal" onClick={closeModal}>
         <div className="modal-content pixel-corners-grey">
-          <div className="horizontal-border top-border"></div>
-          <div className="vertical-border left-border"></div>
           <h2>Player Stats</h2>
-          <p>No word guessed correctly in the last seven days. Please complete a game to start your stats.</p>
+          <p>Stats are currently unavailable. Try again later.</p>
           <button className="close-btn" onClick={handleClose}>► Close</button>
-          <div className="horizontal-border bottom-border"></div>
-          <div className="vertical-border right-border"></div>
+        </div>
+      </div>
+    );
+  }
+
+  const userStats = userData.map(user => ({
+    Username: user.Username,
+    SevenDayAvg: user.Scores_Last_Seven_Days.length
+      ? user.Scores_Last_Seven_Days.reduce((a, b) => a + b, 0) / user.Scores_Last_Seven_Days.length
+      : 0,
+    ThirtyDayAvg: user.Scores_Last_Thirty_Days.length
+      ? user.Scores_Last_Thirty_Days.reduce((a, b) => a + b, 0) / user.Scores_Last_Thirty_Days.length
+      : 0,
+    HighestToday: user.Scores_Last_Seven_Days.length
+      ? Math.max(...user.Scores_Last_Seven_Days.slice(-1)) // assuming last score is "today"
+      : 0,
+    NoScoresInLastSeven: user.Scores_Last_Seven_Days.every(score => score === 0),
+  }));
+  
+  // Sorting users by 7-day average for leaderboard
+  const sortedUserStats = [...userStats].sort((a, b) => b.SevenDayAvg - a.SevenDayAvg);
+
+  // Find the current user in the sorted stats
+  const currentUserIndex = sortedUserStats.findIndex(user => user.Username === currentUser);
+  const currentUserStats = sortedUserStats[currentUserIndex] || null; // Prevent undefined errors
+
+  if (!currentUserStats || currentUserStats.NoScoresInLastSeven) {
+    return (
+      <div className="modal" onClick={closeModal}>
+        <div className="modal-content pixel-corners-grey">
+          <h2>Player Stats</h2>
+          <p>No scores recorded in the last seven days. Play a game to start tracking stats!</p>
+          <button className="close-btn" onClick={handleClose}>► Close</button>
         </div>
       </div>
     );
@@ -75,23 +91,26 @@ const StatsModal: React.FC<StatsModalProps> = ({
     showModal && (
       <div className="modal" onClick={closeModal}>
         <div className="modal-content pixel-corners-grey">
-          <div className="horizontal-border top-border"></div>
-          <div className="vertical-border left-border"></div>
           <h2>Player Stats</h2>
-          <p>7-Day Average: {currentUserStats?.SevenDayAvg.toFixed(2)}</p>
-          <p>30-Day Average: {currentUserStats?.ThirtyDayAvg.toFixed(2)}</p>
-          <p>Highest Score Today: {currentUserStats?.HighestToday}</p>
-          <h3>7-Week Rankings</h3>
-          <p># {currentUserIndex > 0 ? `${currentUserIndex}: ${sortedUserStats[currentUserIndex - 1]?.Username}` : 'N/A'}</p>
-          <p># {currentUserIndex}: {currentUserStats?.Username}</p>
-          <p># {currentUserIndex < sortedUserStats.length - 1 ? `${currentUserIndex + 1}: ${sortedUserStats[currentUserIndex + 1]?.Username}` : 'N/A'}</p>
+          <p>7-Day Average: {currentUserStats.SevenDayAvg.toFixed(2)}</p>
+          <p>30-Day Average: {currentUserStats.ThirtyDayAvg.toFixed(2)}</p>
+          <p>Highest Score Today: {currentUserStats.HighestToday}</p>
+
+          <h3>7-Day Rankings</h3>
+          {currentUserIndex > 0 && (
+            <p># {currentUserIndex}: {sortedUserStats[currentUserIndex - 1]?.Username}</p>
+          )}
+          <p># {currentUserIndex + 1}: {currentUserStats.Username}</p>
+          {currentUserIndex < sortedUserStats.length - 1 && (
+            <p># {currentUserIndex + 2}: {sortedUserStats[currentUserIndex + 1]?.Username}</p>
+          )}
+
           <h3>30-Day Leaderboard</h3>
-          <p>#1: {sortedUserStats[0]?.Username} - {sortedUserStats[0]?.ThirtyDayAvg.toFixed(2)}</p>
-          <p>#2: {sortedUserStats[1]?.Username} - {sortedUserStats[1]?.ThirtyDayAvg.toFixed(2)}</p>
-          <p>#3: {sortedUserStats[2]?.Username} - {sortedUserStats[2]?.ThirtyDayAvg.toFixed(2)}</p>
+          {sortedUserStats.slice(0, 3).map((user, index) => (
+            <p key={index}>#{index + 1}: {user.Username} - {user.ThirtyDayAvg.toFixed(2)}</p>
+          ))}
+
           <button className="close-btn" onClick={handleClose}>► Close</button>
-          <div className="horizontal-border bottom-border"></div>
-          <div className="vertical-border right-border"></div>
         </div>
       </div>
     )

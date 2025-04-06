@@ -8,9 +8,9 @@ const typeDefs = gql`
   }
 
   type User {
-  _id: ID!
-  username: String!
-  email: String!
+    _id: ID!
+    username: String!
+    email: String!
   }
 
   type UserStats {
@@ -24,8 +24,8 @@ const typeDefs = gql`
   }
 
   type AuthPayload {
-  token: String!
-  user: User!
+    token: String!
+    user: User!
   }
 
   type Query {
@@ -40,7 +40,7 @@ const typeDefs = gql`
 
     # Fetch Pokémon by typing
     getPokemonByTyping(typing: String!): [Pokemon!]!
-    
+
     getRandomPokemon: Pokemon
 
     getCurrentUser: User
@@ -49,11 +49,21 @@ const typeDefs = gql`
   }
 
   type Mutation {
-  registerUser(username: String!,
-  email: String!,
-  password: String!): AuthPayload
-  
-  loginUser(email: String!, password: String!): AuthPayload
+    registerUser(
+      username: String!
+      email: String!
+      password: String!
+    ): AuthPayload
+
+    loginUser(
+      email: String!
+      password: String!
+    ): AuthPayload
+
+    trackUserStats(
+      score: Int!
+    ): MessageResponse!
   }
 `;
+
 export default typeDefs;

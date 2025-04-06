@@ -19,3 +19,16 @@ export const GETALLPOKEMON = gql`
         }
     }
 `;
+export const GET_USER_STATS = gql`
+  query getUserStats {
+    getUserStats {
+      user {
+        _id
+        username
+      }
+      scores_last_7_days
+      scores_last_30_days
+    }
+  }
+`;
+
