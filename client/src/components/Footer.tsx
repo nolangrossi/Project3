@@ -5,7 +5,7 @@ import CreditsModal from "./modals/CreditsModal";
 
 const githubUsers = [
   {
-    username: "nolangrossi",
+    username: "NolanGrossi",
     profileUrl: "https://github.com/nolangrossi",
     avatarUrl: "https://avatars.githubusercontent.com/nolangrossi",
   },
@@ -16,7 +16,7 @@ const githubUsers = [
   },
   {
     username: "AndrewPelfrey",
-    profileUrl: "https://github.com/andrewPelfrep",
+    profileUrl: "https://github.com/andrewPelfrey",
     avatarUrl: "https://avatars.githubusercontent.com/andrewpelfrey",
   },
 ];

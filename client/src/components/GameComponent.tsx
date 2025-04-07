@@ -11,6 +11,7 @@ import { handleKeyDown } from "./functions/keyboardNavigation";
 import MenuBox from "./MenuBox";
 import LoginModal from "./modals/LoginModal";
 import StatsModal from "./modals/StatsModal";
+import CreditsModal from "./modals/CreditsModal";
 
 // Styles
 import "../styles/game.css";
@@ -18,6 +19,24 @@ import "../styles/pixelated.css";
 
 // Temporary Import For Mock Data
 import { mockUserData } from './modals/mockStats'
+
+const githubUsers = [
+  {
+    username: "NolanGrossi",
+    profileUrl: "https://github.com/nolangrossi",
+    avatarUrl: "https://avatars.githubusercontent.com/nolangrossi",
+  },
+  {
+    username: "CerfSoleil",
+    profileUrl: "https://github.com/cerfsoleil",
+    avatarUrl: "https://avatars.githubusercontent.com/cerfsoleil",
+  },
+  {
+    username: "AndrewPelfrey",
+    profileUrl: "https://github.com/andrewPelfrey",
+    avatarUrl: "https://avatars.githubusercontent.com/andrewpelfrey",
+  },
+];
 
 const Game: React.FC = () => {
   const { data, loading, error, refetch } = useQuery(GETRANDOMPOKEMON);
@@ -31,8 +50,10 @@ const Game: React.FC = () => {
   const [gameMessage, setGameMessage] = useState<string>("");
   const [incorrectRows, setIncorrectRows] = useState<boolean[]>(Array(6).fill(false));
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showStatsModal, setShowStatsModal] = useState(false);
+
+  // Single state to track the active modal
+  const [activeModal, setActiveModal] = useState<"login" | "stats" | "credits" | null>(null);
+
 
   // Initialize the game when the Pokémon data is loaded
   useEffect(() => {
@@ -95,11 +116,14 @@ const Game: React.FC = () => {
       }
     });
 
-    setColors(newColors);
+    console.log("isCorrect:", isCorrect); // Debugging
 
+    // If the guess is correct, set all boxes in the current row to green
     if (isCorrect) {
+      newColors[currentRow] = newColors[currentRow].map(() => "green");
       setUserScore(6 - currentRow);
       setGameMessage(`🎉 Congratulations! You won with a score of ${6 - currentRow}!`);
+      console.log("Game won!"); // Debugging
     } else {
       const newIncorrectRows = [...incorrectRows];
       newIncorrectRows[currentRow] = true;
@@ -113,6 +137,10 @@ const Game: React.FC = () => {
         setGameMessage(`Game over! The word was: ${sanitizedPokemonName}`);
       }
     }
+
+    setColors(newColors);
+    console.log("newColors:", newColors); // Debugging
+    console.log("gameMessage:", gameMessage); // Debugging
   };
 
   if (loading) return (
@@ -182,31 +210,38 @@ const Game: React.FC = () => {
         <div className="alert-box pixel-corners-grey">{gameMessage}</div>
         <MenuBox
           checkWord={checkWord}
-          resetGame={resetGame} // Pass resetGame to MenuBox
-          setShowLoginModal={setShowLoginModal}
-          setShowStatsModal={setShowStatsModal}
+          resetGame={resetGame}
+          setShowLoginModal={() => setActiveModal("login")}
+          setShowStatsModal={() => setActiveModal("stats")}
+          setShowCreditsModal={() => setActiveModal('credits')}
           isLoggedIn={isLoggedIn}
           setIsLoggedIn={setIsLoggedIn}
-          userScore={userScore} // Pass userScore to determine if "Play Again" should be shown
+          userScore={userScore}
         />
       </div>
 
-      {/* {userScore !== null && <h2>Final Score: {userScore}</h2>} */}
-
-
-      {showLoginModal && (
+      {/* Render modals conditionally based on activeModal */}
+      {activeModal === "login" && (
         <LoginModal
-          showLoginModal={showLoginModal}
-          setShowLoginModal={setShowLoginModal}
+          showLoginModal={true}
+          setShowLoginModal={() => setActiveModal(null)}
           setIsLoggedIn={setIsLoggedIn}
         />
       )}
-      {showStatsModal && (
-        <StatsModal showModal={true} 
-        setShowStatsModal={() => {}} 
-        userData={mockUserData} 
-        currentUser="Player4" 
+      {activeModal === "stats" && (
+        <StatsModal
+          showModal={true}
+          setShowStatsModal={() => setActiveModal(null)}
+          userData={mockUserData}
+          currentUser="Player4"
         />
+      )}
+      {activeModal === "credits" && (
+      <CreditsModal
+        showModal={true}
+        setShowCreditsModal={() => setActiveModal(null)}
+        githubUsers={githubUsers}
+      />
       )}
     </div>
   );

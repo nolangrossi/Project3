@@ -3,12 +3,13 @@ import "../styles/menuBox.css";
 
 interface MenuBoxProps {
   checkWord: () => void;
-  resetGame: () => void; // Add resetGame as a prop
+  resetGame: () => void;
   setShowLoginModal: React.Dispatch<React.SetStateAction<boolean>>;
   setShowStatsModal: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowCreditsModal: React.Dispatch<React.SetStateAction<boolean>>; // Add setShowCreditsModal prop
   isLoggedIn: boolean;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-  userScore: number | null; // Add userScore as a prop to determine if the game has ended
+  userScore: number | null;
 }
 
 const MenuBox: React.FC<MenuBoxProps> = ({
@@ -16,6 +17,7 @@ const MenuBox: React.FC<MenuBoxProps> = ({
   resetGame,
   setShowLoginModal,
   setShowStatsModal,
+  setShowCreditsModal, // Add setShowCreditsModal
   isLoggedIn,
   setIsLoggedIn,
   userScore,
@@ -36,8 +38,9 @@ const MenuBox: React.FC<MenuBoxProps> = ({
     },
     { label: "Player Stats", action: () => setShowStatsModal(true) },
     ...(userScore !== null
-      ? [{ label: "Play Again", action: resetGame }] // Add "Play Again" if the game has ended
+      ? [{ label: "Play Again", action: resetGame }]
       : []),
+    { label: "Credits", action: () => setShowCreditsModal(true) }, // Add Credits option
   ];
 
   useEffect(() => {

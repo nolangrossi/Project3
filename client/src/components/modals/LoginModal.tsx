@@ -33,11 +33,24 @@ const LoginModal: React.FC<LoginModalProps> = ({ showLoginModal, setShowLoginMod
         setShowLoginModal(false);
       }
     };
-    window.addEventListener('keydown', handleEscape);
+
+    const stopArrowKeys = (e: KeyboardEvent) => {
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    };
+
+    if (showLoginModal) {
+      window.addEventListener('keydown', handleEscape);
+      window.addEventListener('keydown', stopArrowKeys);
+    }
+
     return () => {
       window.removeEventListener('keydown', handleEscape);
+      window.removeEventListener('keydown', stopArrowKeys);
     };
-  }, [setShowLoginModal]);
+  }, [showLoginModal, setShowLoginModal]);
 
   const toggleLoginSignUp = () => {
     setIsLogin((prev) => !prev);
