@@ -93,7 +93,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ showLoginModal, setShowLoginMod
         setErrorMessage(null); // Clear error message on success
       }
     } catch (error: any) {
-      // Check if the error contains specific information about the email being in use
       if (error.graphQLErrors && error.graphQLErrors.length > 0) {
         const errorMessageFromServer = error.graphQLErrors[0].message;
         if (errorMessageFromServer.includes("email already in use")) {

@@ -22,7 +22,6 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ showModal, setShowCreditsMo
         and educational purposes. No copyright infringement is intended.
       </p>
 
-      {/* GitHub Profiles */}
       <h3>Contributors</h3>
       <div className="github-profiles">
         {githubUsers.map((user) => (
@@ -33,7 +32,6 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ showModal, setShowCreditsMo
         ))}
       </div>
 
-      {/* Terms & Conditions */}
       <div className="terms-section">
         <p>
           <a href="/terms" className="footer-link">

@@ -1,19 +1,15 @@
-// Dependencies
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 
-// Functions
 import { GETRANDOMPOKEMON } from "../utils/queries";
 import { handleInputChange } from "./functions/inputNavigation";
 import { handleKeyDown } from "./functions/keyboardNavigation";
 
-// Components
 import MenuBox from "./MenuBox";
 import LoginModal from "./modals/LoginModal";
 import StatsModal from "./modals/StatsModal";
 import CreditsModal from "./modals/CreditsModal";
 
-// Styles
 import "../styles/game.css";
 import "../styles/pixelated.css";
 
@@ -51,30 +47,24 @@ const Game: React.FC = () => {
   const [incorrectRows, setIncorrectRows] = useState<boolean[]>(Array(6).fill(false));
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Single state to track the active modal
   const [activeModal, setActiveModal] = useState<"login" | "stats" | "credits" | null>(null);
 
 
-  // Initialize the game when the Pokémon data is loaded
   useEffect(() => {
     if (data && data.getRandomPokemon) {
       const selectedPokemon = data.getRandomPokemon;
 
-      // Remove all special characters from the Pokémon's name
       const sanitizedPokemonName = selectedPokemon.name.replace(/[^a-zA-Z]/g, "");
 
-      // Initialize rows and colors based on the sanitized Pokémon name length
       setRows(Array(6).fill("").map(() => Array(sanitizedPokemonName.length).fill("")));
       setColors(Array(6).fill("").map(() => Array(sanitizedPokemonName.length).fill("")));
 
-      // Set hints for the Pokémon's type(s)
       setHints(selectedPokemon.typing);
 
       setGameMessage(`Guess the Pokémon!`);
     }
   }, [data]);
 
-  // Reset the game state for replay
   const resetGame = () => {
     setRows([]);
     setCurrentRow(0);
@@ -84,7 +74,7 @@ const Game: React.FC = () => {
     setColors([]);
     setGameMessage("");
     setIncorrectRows(Array(6).fill(false));
-    refetch(); // Refetch a new Pokémon
+    refetch();
   };
 
   const checkWord = () => {
@@ -116,9 +106,8 @@ const Game: React.FC = () => {
       }
     });
 
-    console.log("isCorrect:", isCorrect); // Debugging
+    console.log("isCorrect:", isCorrect);
 
-    // If the guess is correct, set all boxes in the current row to green
     if (isCorrect) {
       newColors[currentRow] = newColors[currentRow].map(() => "green");
       setUserScore(6 - currentRow);
@@ -139,8 +128,8 @@ const Game: React.FC = () => {
     }
 
     setColors(newColors);
-    console.log("newColors:", newColors); // Debugging
-    console.log("gameMessage:", gameMessage); // Debugging
+    console.log("newColors:", newColors);
+    console.log("gameMessage:", gameMessage);
   };
 
   if (loading) return (
@@ -167,11 +156,11 @@ const Game: React.FC = () => {
             <div className="horizontal-border top-border"></div>
             <div className="vertical-border left-border"></div>
 
-            {/* Display a single type image as a hint */}
+            
             {rowIndex >= 1 && rowIndex <= 3 && incorrectRows[rowIndex - 1] && hints[rowIndex - 1] && (
               <div className="types-container">
                 <img
-                  src={`/assets/types/${hints[rowIndex - 1].toLowerCase()}.svg`} // Show one type based on the row index
+                  src={`/assets/types/${hints[rowIndex - 1].toLowerCase()}.svg`}
                   alt={hints[rowIndex - 1]}
                   className="type-icon"
                 />
@@ -187,7 +176,7 @@ const Game: React.FC = () => {
                   value={cell}
                   className={`input-box ${rowIndex === currentRow && cellIndex === activeIndex ? "active-box" : ""}`}
                   style={{
-                    backgroundColor: rowIndex < currentRow ? colors[rowIndex][cellIndex] : "white",
+                    backgroundColor: colors[rowIndex]?.[cellIndex] || "white",
                   }}
                   disabled={rowIndex !== currentRow}
                   onChange={(e) =>
@@ -196,7 +185,6 @@ const Game: React.FC = () => {
                   onKeyDown={(e) => handleKeyDown(e, rowIndex, cellIndex, rows, setRows, setActiveIndex)}
                 />
               ))}
-              
             </div>
             <div className="horizontal-line top-line"></div>
             <div className="horizontal-line bottom-line"></div>
@@ -220,7 +208,6 @@ const Game: React.FC = () => {
         />
       </div>
 
-      {/* Render modals conditionally based on activeModal */}
       {activeModal === "login" && (
         <LoginModal
           showLoginModal={true}
