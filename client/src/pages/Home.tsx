@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import Game from '../components/GameComponent';
-import Footer from '../components/Footer';
+// import Footer from '../components/Footer';
 // import LoginModal from '../components/LoginModal';
 // import MenuBox from '../components/MenuBox';
 //import '../styles/home.css'
@@ -24,7 +24,6 @@ const Home = () => {
   return (
     <div className="home">
       <Game />
-      <Footer />
     </div>
   );
 };

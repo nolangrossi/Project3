@@ -15,6 +15,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ showLoginModal, setShowLoginMod
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoggedIn, setLocalIsLoggedIn] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // State for error messages
 
   const closeModal = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -32,17 +33,31 @@ const LoginModal: React.FC<LoginModalProps> = ({ showLoginModal, setShowLoginMod
         setShowLoginModal(false);
       }
     };
-    window.addEventListener('keydown', handleEscape);
+
+    const stopArrowKeys = (e: KeyboardEvent) => {
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    };
+
+    if (showLoginModal) {
+      window.addEventListener('keydown', handleEscape);
+      window.addEventListener('keydown', stopArrowKeys);
+    }
+
     return () => {
       window.removeEventListener('keydown', handleEscape);
+      window.removeEventListener('keydown', stopArrowKeys);
     };
-  }, [setShowLoginModal]);
+  }, [showLoginModal, setShowLoginModal]);
 
   const toggleLoginSignUp = () => {
     setIsLogin((prev) => !prev);
     setUsername('');
     setEmail('');
     setPassword('');
+    setErrorMessage(null); // Clear error message when switching modes
   };
 
   const [loginMutation] = useMutation(LOGIN_USER);
@@ -58,9 +73,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ showLoginModal, setShowLoginMod
         setIsLoggedIn(true);
         setLocalIsLoggedIn(true);
         setUsername(data.loginUser.user.username);
+        setErrorMessage(null); // Clear error message on success
       }
     } catch (error) {
-      alert('Invalid credentials');
+      setErrorMessage('Invalid credentials. Please try again.'); // Set error message
       console.error(error);
     }
   };
@@ -74,9 +90,19 @@ const LoginModal: React.FC<LoginModalProps> = ({ showLoginModal, setShowLoginMod
         setIsLoggedIn(true);
         setLocalIsLoggedIn(true);
         setUsername(data.registerUser.user.username);
+        setErrorMessage(null); // Clear error message on success
       }
-    } catch (error) {
-      alert('Sign-up failed');
+    } catch (error: any) {
+      if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+        const errorMessageFromServer = error.graphQLErrors[0].message;
+        if (errorMessageFromServer.includes("email already in use")) {
+          setErrorMessage("The email is already in use. Please try a different one.");
+        } else {
+          setErrorMessage(errorMessageFromServer || "Sign-up failed. Please try again.");
+        }
+      } else {
+        setErrorMessage("Sign-up failed. Please try again."); // Generic error message
+      }
       console.error(error);
     }
   };
@@ -96,7 +122,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ showLoginModal, setShowLoginMod
     const storedToken = localStorage.getItem('token');
     const storedUsername = localStorage.getItem('username');
     const storedIsLoggedIn = localStorage.getItem('isLoggedIn');
-  
+
     if (storedToken && storedUsername && storedIsLoggedIn === 'true') {
       setIsLoggedIn(true);
       setLocalIsLoggedIn(true);
@@ -107,8 +133,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ showLoginModal, setShowLoginMod
       localStorage.removeItem('isLoggedIn'); // Remove if not actually logged in
     }
   }, []);
-  
-  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -160,6 +184,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ showLoginModal, setShowLoginMod
           <button onClick={toggleLoginSignUp}>
             {isLogin ? 'Switch to Sign Up' : 'Switch to Login'}
           </button>
+
+          {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Display error message */}
 
           {isLoggedIn ? (
             <div>
