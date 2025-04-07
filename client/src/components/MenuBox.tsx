@@ -6,7 +6,11 @@ interface MenuBoxProps {
   resetGame: () => void;
   setShowLoginModal: React.Dispatch<React.SetStateAction<boolean>>;
   setShowStatsModal: React.Dispatch<React.SetStateAction<boolean>>;
+
   setShowCreditsModal: React.Dispatch<React.SetStateAction<boolean>>; // Add setShowCreditsModal prop
+
+  setShowInstructionsModal: React.Dispatch<React.SetStateAction<boolean>>;
+
   isLoggedIn: boolean;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   userScore: number | null;
@@ -18,9 +22,11 @@ const MenuBox: React.FC<MenuBoxProps> = ({
   setShowLoginModal,
   setShowStatsModal,
   setShowCreditsModal, // Add setShowCreditsModal
+  setShowInstructionsModal, 
   isLoggedIn,
   setIsLoggedIn,
   userScore,
+
 }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -36,11 +42,15 @@ const MenuBox: React.FC<MenuBoxProps> = ({
           }
         : () => setShowLoginModal(true),
     },
+
     { label: "Player Stats", action: () => setShowStatsModal(true) },
     ...(userScore !== null
       ? [{ label: "Play Again", action: resetGame }]
       : []),
     { label: "Credits", action: () => setShowCreditsModal(true) }, // Add Credits option
+
+    { label: "Instructions", action: () => setShowInstructionsModal(true)},
+
   ];
 
   useEffect(() => {

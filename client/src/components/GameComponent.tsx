@@ -8,7 +8,11 @@ import { handleKeyDown } from "./functions/keyboardNavigation";
 import MenuBox from "./MenuBox";
 import LoginModal from "./modals/LoginModal";
 import StatsModal from "./modals/StatsModal";
+
 import CreditsModal from "./modals/CreditsModal";
+
+import InstructionsModal from "./modals/InstructionsModal";
+
 
 import "../styles/game.css";
 import "../styles/pixelated.css";
@@ -47,7 +51,11 @@ const Game: React.FC = () => {
   const [incorrectRows, setIncorrectRows] = useState<boolean[]>(Array(6).fill(false));
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const [activeModal, setActiveModal] = useState<"login" | "stats" | "credits" | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showStatsModal, setShowStatsModal] = useState(false);
+  const [showInstructionsModal, setShowInstructionsModal] = useState(false);
+
+  const [activeModal, setActiveModal] = useState<"login" | "stats" | "credits" | "instruct" | null>(null);
 
 
   useEffect(() => {
@@ -202,6 +210,7 @@ const Game: React.FC = () => {
           setShowLoginModal={() => setActiveModal("login")}
           setShowStatsModal={() => setActiveModal("stats")}
           setShowCreditsModal={() => setActiveModal('credits')}
+
           isLoggedIn={isLoggedIn}
           setIsLoggedIn={setIsLoggedIn}
           userScore={userScore}
@@ -215,6 +224,7 @@ const Game: React.FC = () => {
           setIsLoggedIn={setIsLoggedIn}
         />
       )}
+
       {activeModal === "stats" && (
         <StatsModal
           showModal={true}
@@ -229,6 +239,22 @@ const Game: React.FC = () => {
         setShowCreditsModal={() => setActiveModal(null)}
         githubUsers={githubUsers}
       />
+      {showStatsModal && (
+        <StatsModal 
+        showModal={true} 
+        setShowStatsModal={setShowStatsModal} 
+        userData={mockUserData} 
+        // isLoggedIn={isLoggedIn}
+        currentUser="Player4" 
+        />
+      )}
+      {activeModal === "instruct" && (
+        <InstructionsModal 
+        showModal={true}
+        showInstructionsModal={showInstructionsModal}
+        setShowInstructionsModal={setShowInstructionsModal}
+        />
+
       )}
     </div>
   );

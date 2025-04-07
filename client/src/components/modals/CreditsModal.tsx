@@ -38,6 +38,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ showModal, setShowCreditsMo
             Terms & Conditions
           </a>
         </p>
+
       </div>
 
       <button className="close-btn" onClick={() => setShowCreditsModal(false)}>► Close</button>
