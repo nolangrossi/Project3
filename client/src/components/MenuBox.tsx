@@ -33,23 +33,23 @@ const MenuBox: React.FC<MenuBoxProps> = ({
   // Define menu options
   const menuOptions = [
     { label: "Submit", action: checkWord },
-    {
-      label: isLoggedIn ? "Log Out" : "Login",
-      action: isLoggedIn
-        ? () => {
-            setIsLoggedIn(false);
-            // Optionally handle logout actions like clearing session data
-          }
-        : () => setShowLoginModal(true),
-    },
-
-    { label: "Player Stats", action: () => setShowStatsModal(true) },
+    { label: "Instructions", action: () => setShowInstructionsModal(true)},
     ...(userScore !== null
       ? [{ label: "Play Again", action: resetGame }]
       : []),
+      
+      { label: "Player Stats", action: () => setShowStatsModal(true) },
+      {
+        label: isLoggedIn ? "Log Out" : "Login",
+        action: isLoggedIn
+          ? () => {
+              setIsLoggedIn(false);
+              // Optionally handle logout actions like clearing session data
+            }
+          : () => setShowLoginModal(true),
+      },
     { label: "Credits", action: () => setShowCreditsModal(true) }, // Add Credits option
 
-    { label: "Instructions", action: () => setShowInstructionsModal(true)},
 
   ];
 

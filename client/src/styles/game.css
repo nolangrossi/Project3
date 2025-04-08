@@ -17,7 +17,7 @@ h1 {
     flex-direction: column;
     align-items: center;
     /* This creates the stripes */
-    background: linear-gradient(to bottom, #889828, #889828 50%, #b1b169 50%, #b1b169);
+    background: linear-gradient(to bottom, #889828, #889828 40%, #b1b169 50%, #b1b169);
     background-size: 100% 20px;
     border-top: 40px inset #d5ef44;
     border-bottom: 40px inset #889828;
@@ -38,7 +38,7 @@ h1 {
   .word-card {
     background-color: #3890d8;
     padding: 25px;
-    padding-top: 30px;
+    padding-top: 70px; /* Increase top padding to make space for types and images */
     padding-bottom: 40px;
     border-radius: 8px;
     display: flex;
@@ -143,30 +143,37 @@ h1 {
   }
 
   .types-container {
+    position: absolute; /* Position relative to the parent container */
+    top: 10px; /* Adjust to fit within the expanded top area */
+    left: 24px; /* Anchor to the left */
     display: flex;
-    justify-content: center;
     gap: 10px;
-    margin-top: -20px; /* Move the type images up */
-    margin-bottom: 10px; /* Add some spacing below the images */
-    position: relative; /* Ensure it stays within the card */
     z-index: 1; /* Ensure it appears above other elements */
   }
 
   .type-icon {
     width: 40px;
     height: 40px;
+    border-color: black;
+    border: 5px solid #706880;
+    border-radius: 50%;
   }
 
   .pokemon-image-container {
+    position: absolute; /* Position relative to the parent container */
+    top: -15px; /* Align with the types-container */
+    left: 0em; /* Anchor to the right */
     display: flex;
-    justify-content: center;
-    margin-top: 10px;
+    align-items: center;
+    z-index: 1;
   }
 
   .pokemon-image {
     width: 100px;
     height: 100px;
     object-fit: contain;
+    image-rendering: crisp-edges; /* For modern browsers */
+    image-rendering: pixelated;   /* For pixel art */
   }
 
   .play-again-button {

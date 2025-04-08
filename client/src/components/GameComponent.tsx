@@ -146,7 +146,7 @@ const Game: React.FC = () => {
           >
             <div className="horizontal-border top-border"></div>
             <div className="vertical-border left-border"></div>
-
+{/* Display type hints for rows 1-3 */}
             {rowIndex >= 1 && rowIndex <= 3 && incorrectRows[rowIndex - 1] && hints[rowIndex - 1] && (
               <div className="types-container">
                 <img
@@ -157,6 +157,18 @@ const Game: React.FC = () => {
               </div>
             )}
 
+            {/* Display Pokémon image as the final hint */}
+            {rowIndex === 5 && incorrectRows[4] && data?.getRandomPokemon?.id && (
+              <div className="pokemon-image-container">
+                <img
+                  src={`/assets/pokedex/${data.getRandomPokemon.id}.png`}
+                  alt={data.getRandomPokemon.name}
+                  className="pokemon-image"
+                />
+              </div>
+            )}
+
+            {/* Input fields */}
             <div className="input-row">
               {row.map((cell, cellIndex) => (
                 <input
@@ -202,18 +214,18 @@ const Game: React.FC = () => {
         />
       </div>
 
+
+      {activeModal === "login" && (
+        <LoginModal
+        showLoginModal={true}
+        setShowLoginModal={() => setActiveModal(null)}
+        setIsLoggedIn={setIsLoggedIn}
+        />
+      )}
       {activeModal === "instruct" && (
         <InstructionsModal
           showInstructionsModal={true}
           setShowInstructionsModal={() => setActiveModal(null)} // Properly close the modal
-        />
-      )}
-
-      {activeModal === "login" && (
-        <LoginModal
-          showLoginModal={true}
-          setShowLoginModal={() => setActiveModal(null)}
-          setIsLoggedIn={setIsLoggedIn}
         />
       )}
 
