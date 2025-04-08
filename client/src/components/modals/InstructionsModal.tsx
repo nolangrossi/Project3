@@ -19,7 +19,7 @@ const InstructionsModal: React.FC<InstructionsModalProps> = ({ showInstructionsM
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' || e.key === 'Enter') {
+      if (e.key === 'Escape') {
         setShowInstructionsModal(false);
       }
     };

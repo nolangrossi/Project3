@@ -16,7 +16,7 @@ const BaseModal: React.FC<BaseModalProps> = ({ showModal, onClose, children }) =
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' || e.key === 'Enter') {
+      if (e.key === 'Escape') {
         onClose();
       }
     };
