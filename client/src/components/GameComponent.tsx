@@ -210,7 +210,7 @@ const Game: React.FC = () => {
           setShowLoginModal={() => setActiveModal("login")}
           setShowStatsModal={() => setActiveModal("stats")}
           setShowCreditsModal={() => setActiveModal('credits')}
-
+          setShowInstructionsModal={() => setActiveModal('instruct')}
           isLoggedIn={isLoggedIn}
           setIsLoggedIn={setIsLoggedIn}
           userScore={userScore}
@@ -241,12 +241,10 @@ const Game: React.FC = () => {
       />
       )}
       {activeModal === "instruct" && (
-        <InstructionsModal 
-        showModal={true}
-        showInstructionsModal={showInstructionsModal}
-        setShowInstructionsModal={setShowInstructionsModal}
+        <InstructionsModal
+          showInstructionsModal={true}
+          setShowInstructionsModal={() => setActiveModal(null)} // Properly close the modal
         />
-
       )}
     </div>
   );
