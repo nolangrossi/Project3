@@ -14,6 +14,8 @@ interface CreditsModalProps {
 const CreditsModal: React.FC<CreditsModalProps> = ({ showModal, setShowCreditsModal, githubUsers }) => {
   return (
     <BaseModal showModal={showModal} onClose={() => setShowCreditsModal(false)}>
+      <div className="horizontal-border top-border"></div>
+      <div className="vertical-border left-border"></div>
       <h2>Credits</h2>
       <p>&copy; Nintendo, Game Freak, and The Pokémon Company</p>
       <p>
@@ -33,6 +35,10 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ showModal, setShowCreditsMo
       </div>
 
       <button className="close-btn" onClick={() => setShowCreditsModal(false)}>► Close</button>
+      <div className="horizontal-line top-line"></div>
+      <div className="horizontal-line bottom-line"></div>
+      <div className="horizontal-border bottom-border"></div>
+      <div className="vertical-border right-border"></div>
     </BaseModal>
   );
 };
