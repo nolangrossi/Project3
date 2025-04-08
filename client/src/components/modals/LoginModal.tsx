@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER, SIGNUP_USER } from '../../utils/mutations';
 import '../../styles/loginModal.css';
+import '../../styles/pixelated.css';
 
 interface LoginModalProps {
   showLoginModal: boolean;
@@ -147,7 +148,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ showLoginModal, setShowLoginMod
     showLoginModal && (
       <div className="modal" onClick={closeModal}>
         <div className="modal-content pixel-corners-grey">
-          <button className="close-btn" onClick={handleClose}>X</button>
+        <div className="horizontal-border top-border"></div>
+        <div className="vertical-border left-border"></div>
           <h2>{isLogin ? 'Login' : 'Sign Up'}</h2>
           <form onSubmit={handleSubmit}>
             {!isLogin && (
@@ -193,6 +195,12 @@ const LoginModal: React.FC<LoginModalProps> = ({ showLoginModal, setShowLoginMod
               <button onClick={handleLogout}>Log Out</button>
             </div>
           ) : null}
+          <div></div>
+          <button className="close-btn" onClick={handleClose}>► Close</button>
+          <div className="horizontal-line top-line"></div>
+          <div className="horizontal-line bottom-line"></div>
+          <div className="horizontal-border bottom-border"></div>
+          <div className="vertical-border right-border"></div>
         </div>
       </div>
     )

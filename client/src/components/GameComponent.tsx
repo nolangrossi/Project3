@@ -6,12 +6,10 @@ import { handleInputChange } from "./functions/inputNavigation";
 import { handleKeyDown } from "./functions/keyboardNavigation";
 
 import MenuBox from "./MenuBox";
+import InstructionsModal from "./modals/InstructionsModal";
 import LoginModal from "./modals/LoginModal";
 import StatsModal from "./modals/StatsModal";
-
 import CreditsModal from "./modals/CreditsModal";
-
-import InstructionsModal from "./modals/InstructionsModal";
 
 
 import "../styles/game.css";
@@ -49,14 +47,11 @@ const Game: React.FC = () => {
   const [colors, setColors] = useState<string[][]>([]);
   const [gameMessage, setGameMessage] = useState<string>("");
   const [incorrectRows, setIncorrectRows] = useState<boolean[]>(Array(6).fill(false));
+  const [showInstructionsModal, setShowInstructionsModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showStatsModal, setShowStatsModal] = useState(false);
-  const [showInstructionsModal, setShowInstructionsModal] = useState(false);
-
   const [activeModal, setActiveModal] = useState<"login" | "stats" | "credits" | "instruct" | null>(null);
-
 
   useEffect(() => {
     if (data && data.getRandomPokemon) {
@@ -207,15 +202,22 @@ const Game: React.FC = () => {
         <MenuBox
           checkWord={checkWord}
           resetGame={resetGame}
+          setShowInstructionsModal={() => setActiveModal('instruct')}
           setShowLoginModal={() => setActiveModal("login")}
           setShowStatsModal={() => setActiveModal("stats")}
           setShowCreditsModal={() => setActiveModal('credits')}
-          setShowInstructionsModal={() => setActiveModal('instruct')}
           isLoggedIn={isLoggedIn}
           setIsLoggedIn={setIsLoggedIn}
           userScore={userScore}
         />
       </div>
+
+      {activeModal === "instruct" && (
+        <InstructionsModal
+          showInstructionsModal={true}
+          setShowInstructionsModal={() => setActiveModal(null)} // Properly close the modal
+        />
+      )}
 
       {activeModal === "login" && (
         <LoginModal
@@ -239,12 +241,6 @@ const Game: React.FC = () => {
         setShowCreditsModal={() => setActiveModal(null)}
         githubUsers={githubUsers}
       />
-      )}
-      {activeModal === "instruct" && (
-        <InstructionsModal
-          showInstructionsModal={true}
-          setShowInstructionsModal={() => setActiveModal(null)} // Properly close the modal
-        />
       )}
     </div>
   );
