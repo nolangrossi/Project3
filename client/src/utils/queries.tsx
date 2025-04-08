@@ -31,4 +31,14 @@ export const GET_USER_STATS = gql`
     }
   }
 `;
-
+export const GET_LEADERBOARD = gql`
+  query GetLeaderboard($period: String!) {
+    getLeaderboard(period: $period) {
+      user {
+        _id
+        username
+      }
+      averageScore
+    }
+  }
+`;

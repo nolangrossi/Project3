@@ -27,6 +27,15 @@ const typeDefs = gql`
     token: String!
     user: User!
   }
+    type LeaderboardEntry {
+  user: User!
+  averageScore: Float!
+}
+
+extend type Query {
+  getLeaderboard(period: String!): [LeaderboardEntry!]!
+}
+
 
   type Query {
     # Fetch all Pokémon

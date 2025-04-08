@@ -127,9 +127,71 @@ const resolvers = {
         throw new Error('Failed to fetch user stats');
       }
     },
-    
-    
+    getLeaderboard: async (_: any, { period }: { period: string }) => {
+      try {
+        const now = new Date();
+        let startDate;
+
+        if (period === '7d') {
+          startDate = new Date(now.setDate(now.getDate() - 7));
+        } else if (period === '30d') {
+          startDate = new Date(now.setDate(now.getDate() - 30));
+        } else {
+          throw new Error('Invalid period specified');
+        }
+
+        // Aggregate user statistics to calculate average scores
+        const leaderboard = await UserStats.aggregate([
+          {
+            $unwind: '$scores',
+          },
+          {
+            $match: {
+              'scores.date': { $gte: startDate },
+            },
+          },
+          {
+            $group: {
+              _id: '$user',
+              averageScore: { $avg: '$scores.value' },
+            },
+          },
+          {
+            $sort: { averageScore: -1 },
+          },
+          {
+            $limit: 10, // Adjust the limit as needed
+          },
+          {
+            $lookup: {
+              from: 'users',
+              localField: '_id',
+              foreignField: '_id',
+              as: 'user',
+            },
+          },
+          {
+            $unwind: '$user',
+          },
+          {
+            $project: {
+              user: {
+                _id: '$user._id',
+                username: '$user.username',
+              },
+              averageScore: 1,
+            },
+          },
+        ]);
+
+        return leaderboard;
+      } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+        throw new Error('Failed to fetch leaderboard');
+      }
+    },
   },
+
 
   Mutation: {
     registerUser: async (_: any, { username, email, password }: 

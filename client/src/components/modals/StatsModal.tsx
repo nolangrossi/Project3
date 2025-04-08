@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import '../../styles/pixelated.css';
+import { useQuery } from '@apollo/client';
+import { GET_LEADERBOARD } from '../../utils/queries';
 
 interface StatsModalProps {
   showModal: boolean;
@@ -9,14 +11,14 @@ interface StatsModalProps {
     Username: string;
     Scores_Last_Seven_Days: number[];
     Scores_Last_Thirty_Days: number[];
-  } [];
+  }[];
   currentUser: string;
 }
 
 const StatsModal: React.FC<StatsModalProps> = ({
   showModal,
   setShowStatsModal,
-  userData = [], // Default empty array to prevent errors
+  userData = [],
   currentUser,
 }) => {
   const closeModal = (e: React.MouseEvent) => {
@@ -41,6 +43,17 @@ const StatsModal: React.FC<StatsModalProps> = ({
     };
   }, [setShowStatsModal]);
 
+  const { data: leaderboard7Data } = useQuery(GET_LEADERBOARD, {
+    variables: { period: '7d' },
+  });
+
+  const { data: leaderboard30Data } = useQuery(GET_LEADERBOARD, {
+    variables: { period: '30d' },
+  });
+
+  const leaderboard7 = leaderboard7Data?.getLeaderboard || [];
+  const leaderboard30 = leaderboard30Data?.getLeaderboard || [];
+
   // Ensure userData is available
   if (!userData || userData.length === 0) {
     return (
@@ -63,17 +76,12 @@ const StatsModal: React.FC<StatsModalProps> = ({
       ? user.Scores_Last_Thirty_Days.reduce((a, b) => a + b, 0) / user.Scores_Last_Thirty_Days.length
       : 0,
     HighestToday: user.Scores_Last_Seven_Days.length
-      ? Math.max(...user.Scores_Last_Seven_Days.slice(-1)) // assuming last score is "today"
+      ? Math.max(...user.Scores_Last_Seven_Days.slice(-1))
       : 0,
     NoScoresInLastSeven: user.Scores_Last_Seven_Days.every(score => score === 0),
   }));
-  
-  // Sorting users by 7-day average for leaderboard
-  const sortedUserStats = [...userStats].sort((a, b) => b.SevenDayAvg - a.SevenDayAvg);
 
-  // Find the current user in the sorted stats
-  const currentUserIndex = sortedUserStats.findIndex(user => user.Username === currentUser);
-  const currentUserStats = sortedUserStats[currentUserIndex] || null; // Prevent undefined errors
+  const currentUserStats = userStats.find(user => user.Username === currentUser) || null;
 
   if (!currentUserStats || currentUserStats.NoScoresInLastSeven) {
     return (
@@ -97,18 +105,26 @@ const StatsModal: React.FC<StatsModalProps> = ({
           <p>Highest Score Today: {currentUserStats.HighestToday}</p>
 
           <h3>7-Day Rankings</h3>
-          {currentUserIndex > 0 && (
-            <p># {currentUserIndex}: {sortedUserStats[currentUserIndex - 1]?.Username}</p>
-          )}
-          <p># {currentUserIndex + 1}: {currentUserStats.Username}</p>
-          {currentUserIndex < sortedUserStats.length - 1 && (
-            <p># {currentUserIndex + 2}: {sortedUserStats[currentUserIndex + 1]?.Username}</p>
+          {leaderboard7.length > 0 ? (
+            leaderboard7.map((entry: any, index: number) => (
+              <p key={index}>
+                #{index + 1}: {entry.user.username} - {entry.averageScore.toFixed(2)}
+              </p>
+            ))
+          ) : (
+            <p>No scores in the last 7 days.</p>
           )}
 
           <h3>30-Day Leaderboard</h3>
-          {sortedUserStats.slice(0, 3).map((user, index) => (
-            <p key={index}>#{index + 1}: {user.Username} - {user.ThirtyDayAvg.toFixed(2)}</p>
-          ))}
+          {leaderboard30.length > 0 ? (
+            leaderboard30.map((entry: any, index: number) => (
+              <p key={index}>
+                #{index + 1}: {entry.user.username} - {entry.averageScore.toFixed(2)}
+              </p>
+            ))
+          ) : (
+            <p>No scores in the last 30 days.</p>
+          )}
 
           <button className="close-btn" onClick={handleClose}>► Close</button>
         </div>
