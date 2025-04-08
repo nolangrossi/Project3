@@ -1,10 +1,11 @@
-// Dependencies
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
-// Functions
+// Queries & Mutations
 import { GETRANDOMPOKEMON, GET_USER_STATS } from "../utils/queries";
 import { TRACK_USER_STATS } from "../utils/mutations";
+
+// Handlers
 import { handleInputChange } from "./functions/inputNavigation";
 import { handleKeyDown } from "./functions/keyboardNavigation";
 
@@ -19,14 +20,10 @@ import "../styles/game.css";
 import "../styles/pixelated.css";
 
 const Game: React.FC = () => {
-  // Fetch Pokémon and User Stats
-  const { data, loading, error } = useQuery(GETRANDOMPOKEMON);
   const { data: userStatsData } = useQuery(GET_USER_STATS);
-
-  // Mutation to track stats
+  const { data, loading, error, refetch } = useQuery(GETRANDOMPOKEMON);
   const [trackUserStats] = useMutation(TRACK_USER_STATS);
 
-  // State for the game
   const [rows, setRows] = useState<string[][]>([]);
   const [currentRow, setCurrentRow] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -36,40 +33,49 @@ const Game: React.FC = () => {
   const [gameMessage, setGameMessage] = useState<string>("");
   const [incorrectRows, setIncorrectRows] = useState<boolean[]>(Array(6).fill(false));
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showStatsModal, setShowStatsModal] = useState(false);
-  const [showInstructionsModal, setShowInstructionsModal] = useState(false);
 
-  // Initialize the game when Pokémon data loads
+  const [activeModal, setActiveModal] = useState<"login" | "stats" | "credits" | "instruct" | null>(null);
+
+  const resetGame = () => {
+    refetch();
+    setCurrentRow(0);
+    setActiveIndex(0);
+    setUserScore(null);
+    setIncorrectRows(Array(6).fill(false));
+    setGameMessage("");
+  };
+
   useEffect(() => {
     if (data?.getRandomPokemon) {
-      const selectedPokemon = data.getRandomPokemon;
-      setRows(Array(6).fill("").map(() => Array(selectedPokemon.name.length).fill("")));
-      setColors(Array(6).fill("").map(() => Array(selectedPokemon.name.length).fill("")));
+      const selected = data.getRandomPokemon;
+      const sanitized = selected.name.replace(/[^a-zA-Z]/g, "");
+
+      setRows(Array(6).fill("").map(() => Array(sanitized.length).fill("")));
+      setColors(Array(6).fill("").map(() => Array(sanitized.length).fill("")));
+      setHints(selected.typing);
+      setGameMessage("Guess the Pokémon!");
     }
   }, [data]);
 
-  // Check word and update score
   const checkWord = async () => {
     if (!data?.getRandomPokemon) return;
 
-    const selectedPokemon = data.getRandomPokemon;
+    const selected = data.getRandomPokemon;
+    const answer = selected.name.replace(/[^a-zA-Z]/g, "").toLowerCase();
     const guess = rows[currentRow].join("").toLowerCase();
 
-    if (guess.length !== selectedPokemon.name.length) {
+    if (guess.length !== answer.length) {
       setGameMessage("Please fill all boxes.");
       return;
     }
 
-    const wordArr = selectedPokemon.name.toLowerCase().split("");
-    const guessArr = guess.split("");
-    let isCorrect = true;
     const newColors = [...colors];
+    let isCorrect = true;
 
-    guessArr.forEach((letter, i) => {
-      if (letter === wordArr[i]) {
+    guess.split("").forEach((letter, i) => {
+      if (letter === answer[i]) {
         newColors[currentRow][i] = "green";
-      } else if (wordArr.includes(letter)) {
+      } else if (answer.includes(letter)) {
         newColors[currentRow][i] = "yellow";
         isCorrect = false;
       } else {
@@ -82,51 +88,34 @@ const Game: React.FC = () => {
 
     if (isCorrect) {
       const finalScore = 6 - currentRow;
-      setUserScore(finalScore);
-      setGameMessage(`🎉 Congratulations! You won with a score of ${finalScore}!`);
-
-      // Send score to backend
       try {
-        await trackUserStats({
-          variables: { score: finalScore },
-        });
-        console.log("Score successfully tracked!");
+        await trackUserStats({ variables: { score: finalScore } });
       } catch (err) {
         console.error("Error tracking score:", err);
       }
+      setUserScore(finalScore);
+      setGameMessage(`🎉 Congratulations! You won with a score of ${finalScore}!`);
     } else {
-      const newIncorrectRows = [...incorrectRows];
-      newIncorrectRows[currentRow] = true;
-      setIncorrectRows(newIncorrectRows);
+      const updatedIncorrect = [...incorrectRows];
+      updatedIncorrect[currentRow] = true;
+      setIncorrectRows(updatedIncorrect);
 
       if (currentRow < 5) {
         setCurrentRow(currentRow + 1);
         setActiveIndex(0);
         setGameMessage("Incorrect! Try again.");
       } else {
-        setGameMessage(`Game over! The word was: ${selectedPokemon.name}`);
+        setGameMessage(`Game over! The Pokémon was: ${answer}`);
       }
     }
   };
 
-  console.log("userStatsData", JSON.stringify(userStatsData, null, 2));
-
-  if (loading)
-    return (
-      <div className="game-container">
-        <h1>Loading...</h1>
-      </div>
-    );
-  if (error)
-    return (
-      <div className="game-container">
-        <h1>Error loading Pokémon data.</h1>
-      </div>
-    );
+  if (loading) return <div className="game-container"><h1>Loading...</h1></div>;
+  if (error) return <div className="game-container"><h1>Error loading Pokémon data.</h1></div>;
 
   return (
     <div className="game-container">
-      <h1>Pokemon Word Guess Game</h1>
+      <h1>Pokémon Word Guess Game</h1>
 
       <div className="grid-container">
         {rows.map((row, rowIndex) => (
@@ -136,26 +125,35 @@ const Game: React.FC = () => {
           >
             <div className="horizontal-border top-border"></div>
             <div className="vertical-border left-border"></div>
+
             {rowIndex >= 1 && rowIndex <= 3 && incorrectRows[rowIndex - 1] && hints[rowIndex - 1] && (
-              <span className="hint-label">Hint: {hints[rowIndex - 1]}</span>
+              <div className="types-container">
+                <img
+                  src={`/assets/types/${hints[rowIndex - 1].toLowerCase()}.svg`}
+                  alt={hints[rowIndex - 1]}
+                  className="type-icon"
+                />
+              </div>
             )}
 
             <div className="input-row">
               {row.map((cell, cellIndex) => (
                 <input
-                  id={`input-${rowIndex}-${cellIndex}`}
                   key={cellIndex}
+                  id={`input-${rowIndex}-${cellIndex}`}
                   maxLength={1}
                   value={cell}
                   className={`input-box ${rowIndex === currentRow && cellIndex === activeIndex ? "active-box" : ""}`}
                   style={{
-                    backgroundColor: rowIndex < currentRow ? colors[rowIndex][cellIndex] : "white",
+                    backgroundColor: colors[rowIndex]?.[cellIndex] || "white",
                   }}
                   disabled={rowIndex !== currentRow}
                   onChange={(e) =>
                     handleInputChange(e, rowIndex, cellIndex, rows, setRows, setActiveIndex)
                   }
-                  onKeyDown={(e) => handleKeyDown(e, rowIndex, cellIndex, rows, setRows, setActiveIndex)}
+                  onKeyDown={(e) =>
+                    handleKeyDown(e, rowIndex, cellIndex, rows, setRows, setActiveIndex)
+                  }
                 />
               ))}
             </div>
@@ -172,48 +170,49 @@ const Game: React.FC = () => {
         <div className="alert-box pixel-corners-grey">{gameMessage}</div>
         <MenuBox
           checkWord={checkWord}
-          setShowLoginModal={setShowLoginModal}
-          setShowStatsModal={setShowStatsModal}
-          setShowInstructionsModal={setShowInstructionsModal}
+          resetGame={resetGame}
+          setShowLoginModal={() => setActiveModal("login")}
+          setShowStatsModal={() => setActiveModal("stats")}
+          setShowCreditsModal={() => setActiveModal("credits")}
+          setShowInstructionsModal={() => setActiveModal("instruct")}
           isLoggedIn={isLoggedIn}
           setIsLoggedIn={setIsLoggedIn}
+          userScore={userScore}
         />
       </div>
 
-      {userScore !== null && <h2>Final Score: {userScore}</h2>}
-
-      {showLoginModal && (
+      {activeModal === "login" && (
         <LoginModal
-          showLoginModal={showLoginModal}
-          setShowLoginModal={setShowLoginModal}
+          showLoginModal={true}
+          setShowLoginModal={() => setActiveModal(null)}
           setIsLoggedIn={setIsLoggedIn}
         />
       )}
-{showStatsModal && (
-  <StatsModal
-    showModal={true}
-    setShowStatsModal={setShowStatsModal}
-    userData={
-      userStatsData?.getUserStats
-        ? [
-            {
-              UserID: userStatsData.getUserStats.user._id,
-              Username: userStatsData.getUserStats.user.username,
-              Scores_Last_Seven_Days: userStatsData.getUserStats.scores_last_7_days,
-              Scores_Last_Thirty_Days: userStatsData.getUserStats.scores_last_30_days,
-            },
-          ]
-        : []
-    }
-    currentUser={userStatsData?.getUserStats?.user?.username || 'Guest'}
-  />
-)}
 
+      {activeModal === "stats" && (
+        <StatsModal
+          showModal={true}
+          setShowStatsModal={() => setActiveModal(null)}
+          userData={
+            userStatsData?.getUserStats
+              ? [
+                  {
+                    UserID: userStatsData.getUserStats.user._id,
+                    Username: userStatsData.getUserStats.user.username,
+                    Scores_Last_Seven_Days: userStatsData.getUserStats.scores_last_7_days,
+                    Scores_Last_Thirty_Days: userStatsData.getUserStats.scores_last_30_days,
+                  },
+                ]
+              : []
+          }
+          currentUser={userStatsData?.getUserStats?.user?.username || "Guest"}
+        />
+      )}
 
-      {showInstructionsModal && (
+      {activeModal === "instruct" && (
         <InstructionsModal
-          showInstructionsModal={showInstructionsModal}
-          setShowInstructionsModal={setShowInstructionsModal}
+          showInstructionsModal={true}
+          setShowInstructionsModal={() => setActiveModal(null)}
         />
       )}
     </div>

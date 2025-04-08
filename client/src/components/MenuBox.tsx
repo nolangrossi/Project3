@@ -3,36 +3,54 @@ import "../styles/menuBox.css";
 
 interface MenuBoxProps {
   checkWord: () => void;
+  resetGame: () => void;
   setShowLoginModal: React.Dispatch<React.SetStateAction<boolean>>;
   setShowStatsModal: React.Dispatch<React.SetStateAction<boolean>>;
+
+  setShowCreditsModal: React.Dispatch<React.SetStateAction<boolean>>; // Add setShowCreditsModal prop
+
   setShowInstructionsModal: React.Dispatch<React.SetStateAction<boolean>>;
+
   isLoggedIn: boolean;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  userScore: number | null;
 }
 
-const MenuBox: React.FC<MenuBoxProps> = ({ 
-  checkWord, 
-  setShowLoginModal, 
-  setShowStatsModal, 
+const MenuBox: React.FC<MenuBoxProps> = ({
+  checkWord,
+  resetGame,
+  setShowLoginModal,
+  setShowStatsModal,
+  setShowCreditsModal, // Add setShowCreditsModal
   setShowInstructionsModal, 
-  isLoggedIn, 
-  setIsLoggedIn 
+  isLoggedIn,
+  setIsLoggedIn,
+  userScore,
+
 }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  // Define menu options
   const menuOptions = [
     { label: "Submit", action: checkWord },
     {
-      label: isLoggedIn ? "Log Out" : "Login", // Toggle button text based on login status
+      label: isLoggedIn ? "Log Out" : "Login",
       action: isLoggedIn
         ? () => {
             setIsLoggedIn(false);
             // Optionally handle logout actions like clearing session data
           }
-        : () => setShowLoginModal(true), // Open LoginModal when not logged in
+        : () => setShowLoginModal(true),
     },
-    { label: "Player Stats", action: () => setShowStatsModal(true)},
+
+    { label: "Player Stats", action: () => setShowStatsModal(true) },
+    ...(userScore !== null
+      ? [{ label: "Play Again", action: resetGame }]
+      : []),
+    { label: "Credits", action: () => setShowCreditsModal(true) }, // Add Credits option
+
     { label: "Instructions", action: () => setShowInstructionsModal(true)},
+
   ];
 
   useEffect(() => {
@@ -58,6 +76,11 @@ const MenuBox: React.FC<MenuBoxProps> = ({
           {option.label}
         </button>
       ))}
+
+      {/* Add controls hint */}
+      <div className="menu-controls-hint">
+        <p>Use Arrow Keys to Navigate, Enter to Select</p>
+      </div>
     </div>
   );
 };

@@ -43,30 +43,12 @@ const StatsModal: React.FC<StatsModalProps> = ({
     };
   }, [setShowStatsModal]);
 
-  const { data: leaderboard7Data } = useQuery(GET_LEADERBOARD, {
-    variables: { period: '7d' },
-  });
+  // Apollo query
+  const { data, loading, error } = useQuery(GET_LEADERBOARD);
+  const leaderboard7 = data?.leaderboard7 || [];
+  const leaderboard30 = data?.leaderboard30 || [];
 
-  const { data: leaderboard30Data } = useQuery(GET_LEADERBOARD, {
-    variables: { period: '30d' },
-  });
-
-  const leaderboard7 = leaderboard7Data?.getLeaderboard || [];
-  const leaderboard30 = leaderboard30Data?.getLeaderboard || [];
-
-  // Ensure userData is available
-  if (!userData || userData.length === 0) {
-    return (
-      <div className="modal" onClick={closeModal}>
-        <div className="modal-content pixel-corners-grey">
-          <h2>Player Stats</h2>
-          <p>Stats are currently unavailable. Try again later.</p>
-          <button className="close-btn" onClick={handleClose}>► Close</button>
-        </div>
-      </div>
-    );
-  }
-
+  // Process current user stats
   const userStats = userData.map(user => ({
     Username: user.Username,
     SevenDayAvg: user.Scores_Last_Seven_Days.length
@@ -76,7 +58,7 @@ const StatsModal: React.FC<StatsModalProps> = ({
       ? user.Scores_Last_Thirty_Days.reduce((a, b) => a + b, 0) / user.Scores_Last_Thirty_Days.length
       : 0,
     HighestToday: user.Scores_Last_Seven_Days.length
-      ? Math.max(...user.Scores_Last_Seven_Days.slice(-1))
+      ? user.Scores_Last_Seven_Days.slice(-1)[0] ?? 0
       : 0,
     NoScoresInLastSeven: user.Scores_Last_Seven_Days.every(score => score === 0),
   }));
@@ -104,8 +86,12 @@ const StatsModal: React.FC<StatsModalProps> = ({
           <p>30-Day Average: {currentUserStats.ThirtyDayAvg.toFixed(2)}</p>
           <p>Highest Score Today: {currentUserStats.HighestToday}</p>
 
-          <h3>7-Day Rankings</h3>
-          {leaderboard7.length > 0 ? (
+          <h3>7-Day Leaderboard</h3>
+          {loading ? (
+            <p>Loading leaderboard...</p>
+          ) : error ? (
+            <p>Error loading leaderboard.</p>
+          ) : leaderboard7.length > 0 ? (
             leaderboard7.map((entry: any, index: number) => (
               <p key={index}>
                 #{index + 1}: {entry.user.username} - {entry.averageScore.toFixed(2)}

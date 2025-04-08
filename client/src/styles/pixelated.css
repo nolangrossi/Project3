@@ -51,6 +51,11 @@
   bottom: 0px;
 }
 
+button{
+  border: none;
+  background-color: #3890d8;
+}
+
 
 /* Cant figure out why these won't function when properties are separated.
     So I'm just duplicating the code... 
