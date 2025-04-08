@@ -151,6 +151,7 @@ h1 {
     z-index: 1; /* Ensure it appears above other elements */
   }
 
+
   .type-icon {
     width: 40px;
     height: 40px;
@@ -205,4 +206,15 @@ h1 {
 
   .credits-button:hover {
     background-color: #2878b0;
+  }
+
+  .generation-hint {
+    margin-bottom: .5rem;
+    margin-top: -36px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #2878b0;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-align: center;
   }

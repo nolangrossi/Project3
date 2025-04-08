@@ -63,7 +63,6 @@ const Game: React.FC = () => {
       setColors(Array(6).fill("").map(() => Array(sanitizedPokemonName.length).fill("")));
 
       setHints(selectedPokemon.typing);
-
       setGameMessage(`Guess the Pokémon!`);
     }
   }, [data]);
@@ -148,7 +147,7 @@ const Game: React.FC = () => {
 
   return (
     <div className="game-container">
-      <h1>Pokemon Word Guess Game</h1>
+      <h1>Wordémon</h1>
 
       <div className="grid-container">
         {rows.map((row, rowIndex) => (
@@ -167,6 +166,13 @@ const Game: React.FC = () => {
                   alt={hints[rowIndex - 1]}
                   className="type-icon"
                 />
+              </div>
+            )}
+
+            {/* Display generation hint for the 4th guess */}
+            {rowIndex === 3 && incorrectRows[2] && data?.getRandomPokemon?.generation && (
+              <div className="generation-hint">
+                <p>Generation: {data.getRandomPokemon.generation}</p>
               </div>
             )}
 

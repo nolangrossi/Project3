@@ -6,6 +6,7 @@ export const GETRANDOMPOKEMON = gql`
             id
             name
             typing
+            generation
         }
     }
 `;
@@ -16,6 +17,7 @@ export const GETALLPOKEMON = gql`
             id
             name
             typing
+            generation
         }
     }
 `;
