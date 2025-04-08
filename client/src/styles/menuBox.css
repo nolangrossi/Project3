@@ -4,7 +4,8 @@
     display: block;
     position: relative;
     width: 30%;
-    height: 100%;
+    /* Here is the size of the menuBox */
+    height: 150%;
     margin-right: 10px;
     color: black;
     padding: 10px;
@@ -27,9 +28,9 @@
   }
 
   .menu-controls-hint {
-    margin-top: 50px;
+    margin-top: 1rem;
     font-size: 15px;
-    color: #fff;
+    color: black;
     text-align: center;
     /* opacity: 0.8; */
   }

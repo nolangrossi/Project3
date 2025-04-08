@@ -44,9 +44,25 @@ const StatsModal: React.FC<StatsModalProps> = ({
   }, [setShowStatsModal]);
 
   // Apollo query
-  const { data, loading, error } = useQuery(GET_LEADERBOARD);
-  const leaderboard7 = data?.leaderboard7 || [];
-  const leaderboard30 = data?.leaderboard30 || [];
+  const {
+    data: leaderboard7Data,
+    loading: loading7,
+    error: error7,
+  } = useQuery(GET_LEADERBOARD, {
+    variables: { period: '7d' },
+  });
+  
+  const {
+    data: leaderboard30Data,
+    loading: loading30,
+    error: error30,
+  } = useQuery(GET_LEADERBOARD, {
+    variables: { period: '30d' },
+  });
+
+  const leaderboard7 = leaderboard7Data?.getLeaderboard || [];
+const leaderboard30 = leaderboard30Data?.getLeaderboard || [];
+
 
   // Process current user stats
   const userStats = userData.map(user => ({
@@ -87,9 +103,9 @@ const StatsModal: React.FC<StatsModalProps> = ({
           <p>Highest Score Today: {currentUserStats.HighestToday}</p>
 
           <h3>7-Day Leaderboard</h3>
-          {loading ? (
+          {loading7 ? (
             <p>Loading leaderboard...</p>
-          ) : error ? (
+          ) : error7 ? (
             <p>Error loading leaderboard.</p>
           ) : leaderboard7.length > 0 ? (
             leaderboard7.map((entry: any, index: number) => (

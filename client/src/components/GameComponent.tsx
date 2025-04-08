@@ -11,9 +11,10 @@ import { handleKeyDown } from "./functions/keyboardNavigation";
 
 // Components
 import MenuBox from "./MenuBox";
+import InstructionsModal from "./modals/InstructionsModal";
 import LoginModal from "./modals/LoginModal";
 import StatsModal from "./modals/StatsModal";
-import InstructionsModal from "./modals/InstructionsModal";
+import CreditsModal from "./modals/CreditsModal";
 
 // Styles
 import "../styles/game.css";
@@ -32,9 +33,29 @@ const Game: React.FC = () => {
   const [colors, setColors] = useState<string[][]>([]);
   const [gameMessage, setGameMessage] = useState<string>("");
   const [incorrectRows, setIncorrectRows] = useState<boolean[]>(Array(6).fill(false));
+  const [showInstructionsModal, setShowInstructionsModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showStatsModal, setShowStatsModal] = useState(false);
   const [activeModal, setActiveModal] = useState<"login" | "stats" | "credits" | "instruct" | null>(null);
+
+  const githubUsers = [
+    {
+      username: "NolanGrossi",
+      profileUrl: "https://github.com/nolangrossi",
+      avatarUrl: "https://avatars.githubusercontent.com/nolangrossi",
+    },
+    {
+      username: "CerfSoleil",
+      profileUrl: "https://github.com/cerfsoleil",
+      avatarUrl: "https://avatars.githubusercontent.com/cerfsoleil",
+    },
+    {
+      username: "AndrewPelfrey",
+      profileUrl: "https://github.com/andrewPelfrey",
+      avatarUrl: "https://avatars.githubusercontent.com/andrewpelfrey",
+    },
+  ];
 
   const resetGame = () => {
     refetch();
@@ -171,15 +192,22 @@ const Game: React.FC = () => {
         <MenuBox
           checkWord={checkWord}
           resetGame={resetGame}
+          setShowInstructionsModal={() => setActiveModal('instruct')}
           setShowLoginModal={() => setActiveModal("login")}
           setShowStatsModal={() => setActiveModal("stats")}
           setShowCreditsModal={() => setActiveModal("credits")}
-          setShowInstructionsModal={() => setActiveModal("instruct")}
           isLoggedIn={isLoggedIn}
           setIsLoggedIn={setIsLoggedIn}
           userScore={userScore}
         />
       </div>
+
+      {activeModal === "instruct" && (
+        <InstructionsModal
+          showInstructionsModal={true}
+          setShowInstructionsModal={() => setActiveModal(null)} // Properly close the modal
+        />
+      )}
 
       {activeModal === "login" && (
         <LoginModal
@@ -214,6 +242,13 @@ const Game: React.FC = () => {
           showInstructionsModal={true}
           setShowInstructionsModal={() => setActiveModal(null)}
         />
+      )}
+      {activeModal === "credits" && (
+      <CreditsModal
+        showModal={true}
+        setShowCreditsModal={() => setActiveModal(null)}
+        githubUsers={githubUsers}
+      />
       )}
     </div>
   );
