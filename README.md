@@ -56,11 +56,15 @@
   [Latisha McNeel](https://github.com/lmcneel) for providing the training needed to get us this far.
   
   ### Resources Used
-  * [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+  * [![Apollo](https://img.shields.io/badge/-ApolloGraphQL-311C87?style=for-the-badge&logo=apollo-graphql)](https://www.apollographql.com/)
+  * [![Express.js](https://img.shields.io/badge/Express.js-000000?logo=express&logoColor=fff&style=flat)](https://expressjs.com/)
+  * [![GraphQL](https://img.shields.io/badge/GraphQl-E10098?style=for-the-badge&logo=graphql&logoColor=white)](https://graphql.org/)
+  * [![jsonWebToken](https://img.shields.io/badge/JWT-black?style=plastic&logo=JSON%20web%20tokens)](https://www.npmjs.com/package/jsonwebtoken)
+  * [![MongoDB](https://img.shields.io/badge/-MongoDB-13aa52?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+  * [![Mongoose](https://img.shields.io/badge/-Mongoose-880000?style=flat&logo=mongoose&logoColor=white)](https://mongoosejs.com/docs/)
   * [![npm](https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com)
-  * [![express.js](https://img.shields.io/badge/Express.js-000000?logo=express&logoColor=fff&style=flat)](https://expressjs.com/)
-  * [![mongoose](https://img.shields.io/badge/-Mongoose-880000?style=flat&logo=mongoose&logoColor=white)](https://mongoosejs.com/docs/)
-  * [![mongodb](https://img.shields.io/badge/-MongoDB-13aa52?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+  * [![React](https://img.shields.io/badge/-ReactJs-61DAFB?logo=react&logoColor=white&style=for-the-badge)](https://react.dev/)
+  * [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 
   ## License
