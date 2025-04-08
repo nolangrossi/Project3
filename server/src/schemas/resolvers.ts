@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import User from '../models/User.js';
 import { signToken } from '../services/auth.js';
+import { updateUserStats } from '../services/userStats.js';
+import UserStats from '../models/UserStats.js';
 
 dotenv.config();
 
@@ -17,7 +19,6 @@ interface Context {
 
 const resolvers = {
   Query: {
-    // Fetch all Pokémon
     getAllPokemon: async () => {
       try {
         const pokemons = await PokemonModel.find();
@@ -38,10 +39,10 @@ const resolvers = {
         throw new Error('Failed to fetch Pokémon');
       }
     },
-    // Fetch Pokémon by name
+
     getPokemonByName: async (_: any, { name }: { name: string }) => {
       try {
-        const pokemon = await PokemonModel.findOne({ name }); // Find Pokémon by name
+        const pokemon = await PokemonModel.findOne({ name });
         console.log(`Fetched Pokémon with name ${name}:`, pokemon);
         return pokemon;
       } catch (error) {
@@ -50,7 +51,6 @@ const resolvers = {
       }
     },
 
-    // Fetch Pokémon by type
     getPokemonByTyping: async (_: any, { type }: { type: string }) => {
       try {
         const pokemons = await PokemonModel.find({ typing: type });
@@ -87,7 +87,111 @@ const resolvers = {
         throw new Error('Failed to find user');
       }
     },
+
+    getUserStats: async (_: any, __: any, context: Context) => {
+      if (!context.user) {
+        throw new Error('Unauthorized');
+      }
+    
+      try {
+        const userStats = await UserStats.findOne({ user: context.user._id });
+    
+        if (!userStats) {
+          throw new Error('User stats not found');
+        }
+    
+        const now = new Date();
+        const sevenDaysAgo = new Date(now);
+        const thirtyDaysAgo = new Date(now);
+        sevenDaysAgo.setDate(now.getDate() - 7);
+        thirtyDaysAgo.setDate(now.getDate() - 30);
+    
+        const scores_last_7_days = userStats.scores
+          .filter((s) => new Date(s.date) >= sevenDaysAgo)
+          .map((s) => s.value);
+    
+        const scores_last_30_days = userStats.scores
+          .filter((s) => new Date(s.date) >= thirtyDaysAgo)
+          .map((s) => s.value);
+    
+        return {
+          user: {
+            _id: context.user._id,
+            username: context.user.username,
+          },
+          scores_last_7_days,
+          scores_last_30_days,
+        };
+      } catch (error) {
+        console.error('Error fetching user stats:', error);
+        throw new Error('Failed to fetch user stats');
+      }
+    },
+    getLeaderboard: async (_: any, { period }: { period: string }) => {
+      try {
+        const now = new Date();
+        let startDate;
+
+        if (period === '7d') {
+          startDate = new Date(now.setDate(now.getDate() - 7));
+        } else if (period === '30d') {
+          startDate = new Date(now.setDate(now.getDate() - 30));
+        } else {
+          throw new Error('Invalid period specified');
+        }
+
+        // Aggregate user statistics to calculate average scores
+        const leaderboard = await UserStats.aggregate([
+          {
+            $unwind: '$scores',
+          },
+          {
+            $match: {
+              'scores.date': { $gte: startDate },
+            },
+          },
+          {
+            $group: {
+              _id: '$user',
+              averageScore: { $avg: '$scores.value' },
+            },
+          },
+          {
+            $sort: { averageScore: -1 },
+          },
+          {
+            $limit: 10, // Adjust the limit as needed
+          },
+          {
+            $lookup: {
+              from: 'users',
+              localField: '_id',
+              foreignField: '_id',
+              as: 'user',
+            },
+          },
+          {
+            $unwind: '$user',
+          },
+          {
+            $project: {
+              user: {
+                _id: '$user._id',
+                username: '$user.username',
+              },
+              averageScore: 1,
+            },
+          },
+        ]);
+
+        return leaderboard;
+      } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+        throw new Error('Failed to fetch leaderboard');
+      }
+    },
   },
+
 
   Mutation: {
     registerUser: async (_: any, { username, email, password }: 
@@ -143,7 +247,25 @@ const resolvers = {
       
       return { token, user };
     },
-  }
+
+    trackUserStats: async (_: any, { score }: { score: number }, context: Context) => {
+      if (!context.user) {
+        throw new Error('Unauthorized');
+      }
+
+      try {
+        await updateUserStats(context.user._id, score);
+        console.log('User stats updated:', {
+          user: context.user.username,
+          score,
+        });
+        return { message: 'User stats updated successfully' };
+      } catch (error) {
+        console.error('Error tracking user stats:', error);
+        throw new Error('Failed to track user stats');
+      }
+    },
+  },
 };
 
 export default resolvers;

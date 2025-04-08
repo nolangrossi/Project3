@@ -1,43 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 
-import { GETRANDOMPOKEMON } from "../utils/queries";
+// Queries & Mutations
+import { GETRANDOMPOKEMON, GET_USER_STATS } from "../utils/queries";
+import { TRACK_USER_STATS } from "../utils/mutations";
+
+// Handlers
 import { handleInputChange } from "./functions/inputNavigation";
 import { handleKeyDown } from "./functions/keyboardNavigation";
 
+// Components
 import MenuBox from "./MenuBox";
 import InstructionsModal from "./modals/InstructionsModal";
 import LoginModal from "./modals/LoginModal";
 import StatsModal from "./modals/StatsModal";
 import CreditsModal from "./modals/CreditsModal";
 
-
+// Styles
 import "../styles/game.css";
 import "../styles/pixelated.css";
 
-// Temporary Import For Mock Data
-import { mockUserData } from './modals/mockStats'
-
-const githubUsers = [
-  {
-    username: "NolanGrossi",
-    profileUrl: "https://github.com/nolangrossi",
-    avatarUrl: "https://avatars.githubusercontent.com/nolangrossi",
-  },
-  {
-    username: "CerfSoleil",
-    profileUrl: "https://github.com/cerfsoleil",
-    avatarUrl: "https://avatars.githubusercontent.com/cerfsoleil",
-  },
-  {
-    username: "AndrewPelfrey",
-    profileUrl: "https://github.com/andrewPelfrey",
-    avatarUrl: "https://avatars.githubusercontent.com/andrewpelfrey",
-  },
-];
-
 const Game: React.FC = () => {
+  const { data: userStatsData } = useQuery(GET_USER_STATS);
   const { data, loading, error, refetch } = useQuery(GETRANDOMPOKEMON);
+  const [trackUserStats] = useMutation(TRACK_USER_STATS);
 
   const [rows, setRows] = useState<string[][]>([]);
   const [currentRow, setCurrentRow] = useState(0);
@@ -53,6 +39,25 @@ const Game: React.FC = () => {
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [activeModal, setActiveModal] = useState<"login" | "stats" | "credits" | "instruct" | null>(null);
 
+
+  const githubUsers = [
+    {
+      username: "NolanGrossi",
+      profileUrl: "https://github.com/nolangrossi",
+      avatarUrl: "https://avatars.githubusercontent.com/nolangrossi",
+    },
+    {
+      username: "CerfSoleil",
+      profileUrl: "https://github.com/cerfsoleil",
+      avatarUrl: "https://avatars.githubusercontent.com/cerfsoleil",
+    },
+    {
+      username: "AndrewPelfrey",
+      profileUrl: "https://github.com/andrewPelfrey",
+      avatarUrl: "https://avatars.githubusercontent.com/andrewpelfrey",
+    },
+  ];
+
   useEffect(() => {
     if (data && data.getRandomPokemon) {
       const selectedPokemon = data.getRandomPokemon;
@@ -67,39 +72,47 @@ const Game: React.FC = () => {
     }
   }, [data]);
 
+
   const resetGame = () => {
-    setRows([]);
+    refetch();
     setCurrentRow(0);
     setActiveIndex(0);
     setUserScore(null);
-    setHints([]);
-    setColors([]);
-    setGameMessage("");
     setIncorrectRows(Array(6).fill(false));
-    refetch();
+    setGameMessage("");
   };
 
-  const checkWord = () => {
-    if (!data || !data.getRandomPokemon) return;
+  useEffect(() => {
+    if (data?.getRandomPokemon) {
+      const selected = data.getRandomPokemon;
+      const sanitized = selected.name.replace(/[^a-zA-Z]/g, "");
 
-    const selectedPokemon = data.getRandomPokemon;
-    const sanitizedPokemonName = selectedPokemon.name.replace(/[^a-zA-Z]/g, "");
+      setRows(Array(6).fill("").map(() => Array(sanitized.length).fill("")));
+      setColors(Array(6).fill("").map(() => Array(sanitized.length).fill("")));
+      setHints(selected.typing);
+      setGameMessage("Guess the Pokémon!");
+    }
+  }, [data]);
+
+  const checkWord = async () => {
+    if (!data?.getRandomPokemon) return;
+
+    const selected = data.getRandomPokemon;
+    const answer = selected.name.replace(/[^a-zA-Z]/g, "").toLowerCase();
     const guess = rows[currentRow].join("").toLowerCase();
 
-    if (guess.length !== sanitizedPokemonName.length) {
+    if (guess.length !== answer.length) {
       setGameMessage("Please fill all boxes.");
       return;
     }
 
-    const wordArr = sanitizedPokemonName.toLowerCase().split("");
-    const guessArr = guess.split("");
-    let isCorrect = true;
     const newColors = [...colors];
+    let isCorrect = true;
 
-    guessArr.forEach((letter, i) => {
-      if (letter === wordArr[i]) {
+    guess.split("").forEach((letter, i) => {
+      if (letter === answer[i]) {
         newColors[currentRow][i] = "green";
-      } else if (wordArr.includes(letter)) {
+      } else if (answer.includes(letter)) {
         newColors[currentRow][i] = "yellow";
         isCorrect = false;
       } else {
@@ -108,46 +121,42 @@ const Game: React.FC = () => {
       }
     });
 
-    console.log("isCorrect:", isCorrect);
+    setColors(newColors);
 
     if (isCorrect) {
-      newColors[currentRow] = newColors[currentRow].map(() => "green");
-      setUserScore(6 - currentRow);
-      setGameMessage(`🎉 Congratulations! You won with a score of ${6 - currentRow}!`);
-      console.log("Game won!"); // Debugging
+      const finalScore = 6 - currentRow;
+      try {
+        await trackUserStats({ variables: { score: finalScore } });
+      } catch (err) {
+        console.error("Error tracking score:", err);
+      }
+      setUserScore(finalScore);
+      setGameMessage(`🎉 Congratulations! You won with a score of ${finalScore}!`);
     } else {
-      const newIncorrectRows = [...incorrectRows];
-      newIncorrectRows[currentRow] = true;
-      setIncorrectRows(newIncorrectRows);
+      const updatedIncorrect = [...incorrectRows];
+      updatedIncorrect[currentRow] = true;
+      setIncorrectRows(updatedIncorrect);
 
       if (currentRow < 5) {
         setCurrentRow(currentRow + 1);
         setActiveIndex(0);
         setGameMessage("Incorrect! Try again.");
       } else {
-        setGameMessage(`Game over! The word was: ${sanitizedPokemonName}`);
+        setGameMessage(`Game over! The Pokémon was: ${answer}`);
       }
     }
-
-    setColors(newColors);
-    console.log("newColors:", newColors);
-    console.log("gameMessage:", gameMessage);
   };
 
-  if (loading) return (
-    <div className="game-container">
-      <h1>Loading...</h1>
-    </div>
-  );
-  if (error) return (
-    <div className="game-container">
-      <h1>Error loading Pokémon data.</h1>
-    </div>
-  );
+  if (loading) return <div className="game-container"><h1>Loading...</h1></div>;
+  if (error) return <div className="game-container"><h1>Error loading Pokémon data.</h1></div>;
 
   return (
     <div className="game-container">
+
+      <h1>Pokémon Word Guess Game</h1>
+
       <h1>Wordémon</h1>
+
 
       <div className="grid-container">
         {rows.map((row, rowIndex) => (
@@ -157,8 +166,7 @@ const Game: React.FC = () => {
           >
             <div className="horizontal-border top-border"></div>
             <div className="vertical-border left-border"></div>
-
-            {/* Display type hints for rows 1-3 */}
+{/* Display type hints for rows 1-3 */}
             {rowIndex >= 1 && rowIndex <= 3 && incorrectRows[rowIndex - 1] && hints[rowIndex - 1] && (
               <div className="types-container">
                 <img
@@ -191,8 +199,8 @@ const Game: React.FC = () => {
             <div className="input-row">
               {row.map((cell, cellIndex) => (
                 <input
-                  id={`input-${rowIndex}-${cellIndex}`}
                   key={cellIndex}
+                  id={`input-${rowIndex}-${cellIndex}`}
                   maxLength={1}
                   value={cell}
                   className={`input-box ${rowIndex === currentRow && cellIndex === activeIndex ? "active-box" : ""}`}
@@ -203,10 +211,13 @@ const Game: React.FC = () => {
                   onChange={(e) =>
                     handleInputChange(e, rowIndex, cellIndex, rows, setRows, setActiveIndex)
                   }
-                  onKeyDown={(e) => handleKeyDown(e, rowIndex, cellIndex, rows, setRows, setActiveIndex)}
+                  onKeyDown={(e) =>
+                    handleKeyDown(e, rowIndex, cellIndex, rows, setRows, setActiveIndex)
+                  }
                 />
               ))}
             </div>
+
             <div className="horizontal-line top-line"></div>
             <div className="horizontal-line bottom-line"></div>
             <div className="horizontal-border bottom-border"></div>
@@ -223,7 +234,7 @@ const Game: React.FC = () => {
           setShowInstructionsModal={() => setActiveModal('instruct')}
           setShowLoginModal={() => setActiveModal("login")}
           setShowStatsModal={() => setActiveModal("stats")}
-          setShowCreditsModal={() => setActiveModal('credits')}
+          setShowCreditsModal={() => setActiveModal("credits")}
           isLoggedIn={isLoggedIn}
           setIsLoggedIn={setIsLoggedIn}
           userScore={userScore}
@@ -249,8 +260,26 @@ const Game: React.FC = () => {
         <StatsModal
           showModal={true}
           setShowStatsModal={() => setActiveModal(null)}
-          userData={mockUserData}
-          currentUser="Player4"
+          userData={
+            userStatsData?.getUserStats
+              ? [
+                  {
+                    UserID: userStatsData.getUserStats.user._id,
+                    Username: userStatsData.getUserStats.user.username,
+                    Scores_Last_Seven_Days: userStatsData.getUserStats.scores_last_7_days,
+                    Scores_Last_Thirty_Days: userStatsData.getUserStats.scores_last_30_days,
+                  },
+                ]
+              : []
+          }
+          currentUser={userStatsData?.getUserStats?.user?.username || "Guest"}
+        />
+      )}
+
+      {activeModal === "instruct" && (
+        <InstructionsModal
+          showInstructionsModal={true}
+          setShowInstructionsModal={() => setActiveModal(null)}
         />
       )}
       {activeModal === "credits" && (
