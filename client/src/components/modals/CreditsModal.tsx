@@ -32,15 +32,6 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ showModal, setShowCreditsMo
         ))}
       </div>
 
-      <div className="terms-section">
-        <p>
-          <a href="/terms" className="footer-link">
-            Terms & Conditions
-          </a>
-        </p>
-
-      </div>
-
       <button className="close-btn" onClick={() => setShowCreditsModal(false)}>► Close</button>
     </BaseModal>
   );
