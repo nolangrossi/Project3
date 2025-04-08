@@ -239,14 +239,6 @@ const Game: React.FC = () => {
         setShowCreditsModal={() => setActiveModal(null)}
         githubUsers={githubUsers}
       />
-      {showStatsModal && (
-        <StatsModal 
-        showModal={true} 
-        setShowStatsModal={setShowStatsModal} 
-        userData={mockUserData} 
-        // isLoggedIn={isLoggedIn}
-        currentUser="Player4" 
-        />
       )}
       {activeModal === "instruct" && (
         <InstructionsModal 
