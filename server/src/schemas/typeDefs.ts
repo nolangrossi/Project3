@@ -5,6 +5,7 @@ const typeDefs = gql`
     id: String!
     name: String!
     typing: [String!]!
+    generation: String! # Add the virtual field here
   }
 
   type User {

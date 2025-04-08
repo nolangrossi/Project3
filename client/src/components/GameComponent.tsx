@@ -39,6 +39,7 @@ const Game: React.FC = () => {
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [activeModal, setActiveModal] = useState<"login" | "stats" | "credits" | "instruct" | null>(null);
 
+
   const githubUsers = [
     {
       username: "NolanGrossi",
@@ -56,6 +57,21 @@ const Game: React.FC = () => {
       avatarUrl: "https://avatars.githubusercontent.com/andrewpelfrey",
     },
   ];
+
+  useEffect(() => {
+    if (data && data.getRandomPokemon) {
+      const selectedPokemon = data.getRandomPokemon;
+
+      const sanitizedPokemonName = selectedPokemon.name.replace(/[^a-zA-Z]/g, "");
+
+      setRows(Array(6).fill("").map(() => Array(sanitizedPokemonName.length).fill("")));
+      setColors(Array(6).fill("").map(() => Array(sanitizedPokemonName.length).fill("")));
+
+      setHints(selectedPokemon.typing);
+      setGameMessage(`Guess the Pokémon!`);
+    }
+  }, [data]);
+
 
   const resetGame = () => {
     refetch();
@@ -136,7 +152,11 @@ const Game: React.FC = () => {
 
   return (
     <div className="game-container">
+
       <h1>Pokémon Word Guess Game</h1>
+
+      <h1>Wordémon</h1>
+
 
       <div className="grid-container">
         {rows.map((row, rowIndex) => (
@@ -154,6 +174,13 @@ const Game: React.FC = () => {
                   alt={hints[rowIndex - 1]}
                   className="type-icon"
                 />
+              </div>
+            )}
+
+            {/* Display generation hint for the 4th guess */}
+            {rowIndex === 3 && incorrectRows[2] && data?.getRandomPokemon?.generation && (
+              <div className="generation-hint">
+                <p>Generation: {data.getRandomPokemon.generation}</p>
               </div>
             )}
 
