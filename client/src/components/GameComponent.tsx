@@ -74,12 +74,7 @@ const Game: React.FC = () => {
 
 
   const resetGame = () => {
-    refetch();
-    setCurrentRow(0);
-    setActiveIndex(0);
-    setUserScore(null);
-    setIncorrectRows(Array(6).fill(false));
-    setGameMessage("");
+    window.location.reload();
   };
 
   useEffect(() => {
