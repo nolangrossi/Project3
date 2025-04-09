@@ -153,8 +153,6 @@ const Game: React.FC = () => {
   return (
     <div className="game-container">
 
-      <h1>Pokémon Word Guess Game</h1>
-
       <h1>Wordémon</h1>
 
 
