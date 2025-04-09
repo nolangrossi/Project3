@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import '../../styles/pixelated.css';
 import { useQuery } from '@apollo/client';
 import { GET_LEADERBOARD } from '../../utils/queries';
+import '../../styles/pixelated.css';
 
 interface StatsModalProps {
   showModal: boolean;
@@ -85,9 +85,15 @@ const leaderboard30 = leaderboard30Data?.getLeaderboard || [];
     return (
       <div className="modal" onClick={closeModal}>
         <div className="modal-content pixel-corners-grey">
+        <div className="horizontal-border top-border"></div>
+        <div className="vertical-border left-border"></div>
           <h2>Player Stats</h2>
           <p>No scores recorded in the last seven days. Play a game to start tracking stats!</p>
           <button className="close-btn" onClick={handleClose}>► Close</button>
+          <div className="horizontal-line top-line"></div>
+          <div className="horizontal-line bottom-line"></div>
+          <div className="horizontal-border bottom-border"></div>
+          <div className="vertical-border right-border"></div>
         </div>
       </div>
     );
@@ -97,6 +103,8 @@ const leaderboard30 = leaderboard30Data?.getLeaderboard || [];
     showModal && (
       <div className="modal" onClick={closeModal}>
         <div className="modal-content pixel-corners-grey">
+        <div className="horizontal-border top-border"></div>
+        <div className="vertical-border left-border"></div>
           <h2>Player Stats</h2>
           <p>7-Day Average: {currentUserStats.SevenDayAvg.toFixed(2)}</p>
           <p>30-Day Average: {currentUserStats.ThirtyDayAvg.toFixed(2)}</p>
@@ -129,6 +137,10 @@ const leaderboard30 = leaderboard30Data?.getLeaderboard || [];
           )}
 
           <button className="close-btn" onClick={handleClose}>► Close</button>
+          <div className="horizontal-line top-line"></div>
+          <div className="horizontal-line bottom-line"></div>
+          <div className="horizontal-border bottom-border"></div>
+          <div className="vertical-border right-border"></div>
         </div>
       </div>
     )
