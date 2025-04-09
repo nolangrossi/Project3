@@ -79,7 +79,7 @@ const MenuBox: React.FC<MenuBoxProps> = ({
 
       {/* Add controls hint */}
       <div className="menu-controls-hint">
-        <p>Use Arrow Keys to Navigate, Enter to Select</p>
+        <div>Use Arrow Keys to Navigate, Enter to Select</div>
       </div>
     </div>
   );
