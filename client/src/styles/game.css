@@ -175,7 +175,22 @@ h1 {
     object-fit: contain;
     image-rendering: crisp-edges; /* For modern browsers */
     image-rendering: pixelated;   /* For pixel art */
+    
+    animation: floatUpDown 3s ease-in-out infinite;
   }
+  
+  @keyframes floatUpDown {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  
 
   .play-again-button {
     margin-top: 20px;
