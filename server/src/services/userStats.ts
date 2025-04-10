@@ -10,7 +10,7 @@ export const updateUserStats = async (userId: string, score: number): Promise<vo
 
     const now = new Date();
     // This line is for testing to insert a date + is future, - is past
-    now.setDate(now.getDate() + 2)
+    // now.setDate(now.getDate() + 2)
 
     const todayString = now.toISOString().split('T')[0]; //"2025-04-09"
 
