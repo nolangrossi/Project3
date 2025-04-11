@@ -166,7 +166,7 @@ const Game: React.FC = () => {
             <div className="vertical-border left-border"></div>
 {/* Display type hints for rows 1-3 */}
             {rowIndex >= 1 && rowIndex <= 3 && incorrectRows[rowIndex - 1] && hints[rowIndex - 1] && (
-              <div className="types-container">
+              <div className="types-container pixel-corners">
                 <img
                   src={`/assets/types/${hints[rowIndex - 1].toLowerCase()}.svg`}
                   alt={hints[rowIndex - 1]}
