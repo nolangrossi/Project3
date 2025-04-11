@@ -252,19 +252,48 @@ const resolvers = {
       if (!context.user) {
         throw new Error('Unauthorized');
       }
-
+    
       try {
         await updateUserStats(context.user._id, score);
         console.log('User stats updated:', {
           user: context.user.username,
           score,
         });
-        return { message: 'User stats updated successfully' };
+    
+        // New logic to fetch updated stats and return them
+        const userStats = await UserStats.findOne({ user: context.user._id });
+    
+        if (!userStats) {
+          throw new Error('User stats not found after update');
+        }
+    
+        const now = new Date();
+        const sevenDaysAgo = new Date(now);
+        const thirtyDaysAgo = new Date(now);
+        sevenDaysAgo.setDate(now.getDate() - 7);
+        thirtyDaysAgo.setDate(now.getDate() - 30);
+    
+        const scores_last_7_days = userStats.scores
+          .filter((s) => new Date(s.date) >= sevenDaysAgo)
+          .map((s) => s.value);
+    
+        const scores_last_30_days = userStats.scores
+          .filter((s) => new Date(s.date) >= thirtyDaysAgo)
+          .map((s) => s.value);
+    
+        return {
+          user: {
+            _id: context.user._id,
+            username: context.user.username,
+          },
+          scores_last_7_days,
+          scores_last_30_days,
+        };
       } catch (error) {
         console.error('Error tracking user stats:', error);
         throw new Error('Failed to track user stats');
       }
-    },
+    },    
   },
 };
 
