@@ -2,7 +2,7 @@
 
   ## Description
   This application is a Pokémon word game made as a project to work with making a full-stack application. It is a completely functional game that can be played daily to measure your Pokémon against other players!
-  The game is available to play here: [Insert the Link Here]
+  The game is available to play here: [Wordémon](wordmon.onrender.com)
 
 
   ## Table of Contents
